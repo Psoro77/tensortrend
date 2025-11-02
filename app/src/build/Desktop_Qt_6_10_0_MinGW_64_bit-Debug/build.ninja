@@ -53,7 +53,7 @@ build CMakeFiles/src.dir/src_autogen/mocs_compilation.cpp.obj: CXX_COMPILER__src
   DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
   DEP_FILE = CMakeFiles\src.dir\src_autogen\mocs_compilation.cpp.obj.d
   FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/src_autogen/include -isystem C:/Qt/6.10.0/mingw_64/include/QtCore -isystem C:/Qt/6.10.0/mingw_64/include -isystem C:/Qt/6.10.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.0/mingw_64/include/QtGui -isystem C:/Qt/6.10.0/mingw_64/include/QtCharts -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGL -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGLWidgets
+  INCLUDES = -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/src_autogen/include -IC:/Users/DELL/xgboost-src-3.1.0/xgboost/include -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/../predictor -isystem C:/Qt/6.10.0/mingw_64/include/QtCore -isystem C:/Qt/6.10.0/mingw_64/include -isystem C:/Qt/6.10.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.0/mingw_64/include/QtGui -isystem C:/Qt/6.10.0/mingw_64/include/QtCharts -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGL -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGLWidgets
   OBJECT_DIR = CMakeFiles\src.dir
   OBJECT_FILE_DIR = CMakeFiles\src.dir\src_autogen
 
@@ -61,7 +61,7 @@ build CMakeFiles/src.dir/main.cpp.obj: CXX_COMPILER__src_unscanned_Debug C$:/Use
   DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
   DEP_FILE = CMakeFiles\src.dir\main.cpp.obj.d
   FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/src_autogen/include -isystem C:/Qt/6.10.0/mingw_64/include/QtCore -isystem C:/Qt/6.10.0/mingw_64/include -isystem C:/Qt/6.10.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.0/mingw_64/include/QtGui -isystem C:/Qt/6.10.0/mingw_64/include/QtCharts -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGL -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGLWidgets
+  INCLUDES = -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/src_autogen/include -IC:/Users/DELL/xgboost-src-3.1.0/xgboost/include -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/../predictor -isystem C:/Qt/6.10.0/mingw_64/include/QtCore -isystem C:/Qt/6.10.0/mingw_64/include -isystem C:/Qt/6.10.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.0/mingw_64/include/QtGui -isystem C:/Qt/6.10.0/mingw_64/include/QtCharts -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGL -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGLWidgets
   OBJECT_DIR = CMakeFiles\src.dir
   OBJECT_FILE_DIR = CMakeFiles\src.dir
 
@@ -69,9 +69,17 @@ build CMakeFiles/src.dir/mainwindow.cpp.obj: CXX_COMPILER__src_unscanned_Debug C
   DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
   DEP_FILE = CMakeFiles\src.dir\mainwindow.cpp.obj.d
   FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always
-  INCLUDES = -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/src_autogen/include -isystem C:/Qt/6.10.0/mingw_64/include/QtCore -isystem C:/Qt/6.10.0/mingw_64/include -isystem C:/Qt/6.10.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.0/mingw_64/include/QtGui -isystem C:/Qt/6.10.0/mingw_64/include/QtCharts -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGL -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGLWidgets
+  INCLUDES = -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/src_autogen/include -IC:/Users/DELL/xgboost-src-3.1.0/xgboost/include -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/../predictor -isystem C:/Qt/6.10.0/mingw_64/include/QtCore -isystem C:/Qt/6.10.0/mingw_64/include -isystem C:/Qt/6.10.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.0/mingw_64/include/QtGui -isystem C:/Qt/6.10.0/mingw_64/include/QtCharts -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGL -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGLWidgets
   OBJECT_DIR = CMakeFiles\src.dir
   OBJECT_FILE_DIR = CMakeFiles\src.dir
+
+build CMakeFiles/src.dir/C_/Users/DELL/Documents/work/code/Tensortrend/app/predictor/StockPredictor.cpp.obj: CXX_COMPILER__src_unscanned_Debug C$:/Users/DELL/Documents/work/code/Tensortrend/app/predictor/StockPredictor.cpp || cmake_object_order_depends_target_src
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CHARTS_LIB -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NEEDS_QMAIN -DQT_OPENGLWIDGETS_LIB -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
+  DEP_FILE = CMakeFiles\src.dir\C_\Users\DELL\Documents\work\code\Tensortrend\app\predictor\StockPredictor.cpp.obj.d
+  FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug/src_autogen/include -IC:/Users/DELL/xgboost-src-3.1.0/xgboost/include -IC:/Users/DELL/Documents/work/code/Tensortrend/app/src/../predictor -isystem C:/Qt/6.10.0/mingw_64/include/QtCore -isystem C:/Qt/6.10.0/mingw_64/include -isystem C:/Qt/6.10.0/mingw_64/mkspecs/win32-g++ -isystem C:/Qt/6.10.0/mingw_64/include/QtWidgets -isystem C:/Qt/6.10.0/mingw_64/include/QtGui -isystem C:/Qt/6.10.0/mingw_64/include/QtCharts -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGL -isystem C:/Qt/6.10.0/mingw_64/include/QtOpenGLWidgets
+  OBJECT_DIR = CMakeFiles\src.dir
+  OBJECT_FILE_DIR = CMakeFiles\src.dir\C_\Users\DELL\Documents\work\code\Tensortrend\app\predictor
 
 
 # =============================================================================
@@ -81,12 +89,13 @@ build CMakeFiles/src.dir/mainwindow.cpp.obj: CXX_COMPILER__src_unscanned_Debug C
 #############################################
 # Link the executable src.exe
 
-build src.exe: CXX_EXECUTABLE_LINKER__src_Debug CMakeFiles/src.dir/src_autogen/mocs_compilation.cpp.obj CMakeFiles/src.dir/main.cpp.obj CMakeFiles/src.dir/mainwindow.cpp.obj | C$:/Qt/6.10.0/mingw_64/lib/libQt6Charts.a C$:/Qt/6.10.0/mingw_64/lib/libQt6OpenGLWidgets.a C$:/Qt/6.10.0/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.10.0/mingw_64/lib/libQt6OpenGL.a C$:/Qt/6.10.0/mingw_64/lib/libQt6Gui.a C$:/Qt/6.10.0/mingw_64/lib/libQt6Core.a C$:/Qt/6.10.0/mingw_64/lib/libQt6EntryPoint.a || src_autogen src_autogen_timestamp_deps
+build src.exe: CXX_EXECUTABLE_LINKER__src_Debug CMakeFiles/src.dir/src_autogen/mocs_compilation.cpp.obj CMakeFiles/src.dir/main.cpp.obj CMakeFiles/src.dir/mainwindow.cpp.obj CMakeFiles/src.dir/C_/Users/DELL/Documents/work/code/Tensortrend/app/predictor/StockPredictor.cpp.obj | C$:/Qt/6.10.0/mingw_64/lib/libQt6Charts.a C$:/Qt/6.10.0/mingw_64/lib/libQt6OpenGLWidgets.a C$:/Qt/6.10.0/mingw_64/lib/libQt6Widgets.a C$:/Qt/6.10.0/mingw_64/lib/libQt6OpenGL.a C$:/Qt/6.10.0/mingw_64/lib/libQt6Gui.a C$:/Qt/6.10.0/mingw_64/lib/libQt6Core.a C$:/Qt/6.10.0/mingw_64/lib/libQt6EntryPoint.a || src_autogen src_autogen_timestamp_deps
   FLAGS = -DQT_QML_DEBUG -g
   LINK_FLAGS = -mwindows
-  LINK_LIBRARIES = C:/Qt/6.10.0/mingw_64/lib/libQt6Charts.a  C:/Qt/6.10.0/mingw_64/lib/libQt6OpenGLWidgets.a  C:/Qt/6.10.0/mingw_64/lib/libQt6Widgets.a  C:/Qt/6.10.0/mingw_64/lib/libQt6OpenGL.a  C:/Qt/6.10.0/mingw_64/lib/libQt6Gui.a  C:/Qt/6.10.0/mingw_64/lib/libQt6Core.a  -lmpr  -luserenv  -lmingw32  C:/Qt/6.10.0/mingw_64/lib/libQt6EntryPoint.a  -lshell32  -ld3d11  -ldxgi  -ldxguid  -ld3d12  -luser32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = C:/Qt/6.10.0/mingw_64/lib/libQt6Charts.a  -lxgboost  C:/Qt/6.10.0/mingw_64/lib/libQt6OpenGLWidgets.a  C:/Qt/6.10.0/mingw_64/lib/libQt6Widgets.a  C:/Qt/6.10.0/mingw_64/lib/libQt6OpenGL.a  C:/Qt/6.10.0/mingw_64/lib/libQt6Gui.a  C:/Qt/6.10.0/mingw_64/lib/libQt6Core.a  -lmpr  -luserenv  -lmingw32  C:/Qt/6.10.0/mingw_64/lib/libQt6EntryPoint.a  -lshell32  -ld3d11  -ldxgi  -ldxguid  -ld3d12  -luser32  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_PATH = -LC:/Users/DELL/xgboost-src-3.1.0/xgboost/lib
   OBJECT_DIR = CMakeFiles\src.dir
-  POST_BUILD = cd .
+  POST_BUILD = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\DELL\Documents\work\code\Tensortrend\app\src\build\Desktop_Qt_6_10_0_MinGW_64_bit-Debug && C:\Qt\Tools\CMake_64\bin\cmake.exe -E copy_if_different C:/Users/DELL/Documents/work/code/Tensortrend/app/src/../predictor/xgboost.dll C:/Users/DELL/Documents/work/code/Tensortrend/app/src/build/Desktop_Qt_6_10_0_MinGW_64_bit-Debug"
   PRE_LINK = cd .
   TARGET_FILE = src.exe
   TARGET_IMPLIB = libsrc.dll.a
