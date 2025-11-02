@@ -1,136 +1,86 @@
+#include "StockPredictor.h"
 #include <iostream>
-#include <vector>
-#include <string>
 #include <fstream>
 #include <sstream>
-#include <xgboost/c_api.h>
 
-class StockPredictor {
-private:
-    BoosterHandle booster;
-    const int NUM_FEATURES = 60;
-    const int NUM_CLASSES = 3;
+StockPredictor::StockPredictor() : booster(nullptr) {}
 
-public:
-    StockPredictor() : booster(nullptr) {}
+StockPredictor::~StockPredictor() {
+    if (booster) {
+        XGBoosterFree(booster);
+    }
+}
 
-    ~StockPredictor() {
-        if (booster) {
-            XGBoosterFree(booster);
-        }
+bool StockPredictor::loadModel(const std::string& model_path) {
+    int result = XGBoosterCreate(nullptr, 0, &booster);
+    if (result != 0) {
+        std::cerr << "Error creating booster" << std::endl;
+        return false;
     }
 
-    bool loadModel(const std::string& model_path) {
-        int result = XGBoosterCreate(nullptr, 0, &booster);
-        if (result != 0) {
-            std::cerr << "Error creation booster" << std::endl;
-            return false;
-        }
-
-        result = XGBoosterLoadModel(booster, model_path.c_str());
-        if (result != 0) {
-            std::cerr << "Error chargement modele: " << model_path << std::endl;
-            return false;
-        }
-
-        std::cout << "Modele charged: " << model_path << std::endl;
-        return true;
+    result = XGBoosterLoadModel(booster, model_path.c_str());
+    if (result != 0) {
+        std::cerr << "Error loading model: " << model_path << std::endl;
+        return false;
     }
 
-    int predict(const std::vector<float>& features) {
-        if (features.size() != NUM_FEATURES) {
-            std::cerr << "Error: " << features.size() << " features instead of  " << NUM_FEATURES << std::endl;
-            return 0;
-        }
+    std::cout << "Model loaded: " << model_path << std::endl;
+    return true;
+}
 
-        DMatrixHandle dmat;
-        bst_ulong nrows = 1;
-        bst_ulong ncols = NUM_FEATURES;
+StockPredictor::PredictionResult StockPredictor::predictWithProba(const std::vector<float>& features) {
+    PredictionResult result = { 0, 0.0f, 0.0f, 0.0f, 0.0f };
 
-        XGDMatrixCreateFromMat(features.data(), nrows, ncols, -1, &dmat);
-
-        bst_ulong out_len;
-        const float* out_result;
-
-        XGBoosterPredict(booster, dmat, 0, 0, 0, &out_len, &out_result);
-        XGDMatrixFree(dmat);
-
-        int predicted_class = 0;
-        float max_prob = out_result[0];
-
-        for (int i = 1; i < NUM_CLASSES; i++) {
-            if (out_result[i] > max_prob) {
-                max_prob = out_result[i];
-                predicted_class = i;
-            }
-        }
-
-        return predicted_class - 1;  // 0->-1, 1->0, 2->1
-    }
-
-    struct PredictionResult {
-        int prediction;
-        float prob_down;
-        float prob_hold;
-        float prob_up;
-        float confidence;
-    };
-
-    PredictionResult predictWithProba(const std::vector<float>& features) {
-        PredictionResult result = { 0, 0.0f, 0.0f, 0.0f, 0.0f };
-
-        if (features.size() != NUM_FEATURES) {
-            std::cerr << "Error features" << std::endl;
-            return result;
-        }
-
-        DMatrixHandle dmat;
-        XGDMatrixCreateFromMat(features.data(), 1, NUM_FEATURES, -1, &dmat);
-
-        bst_ulong out_len;
-        const float* out_result;
-
-        XGBoosterPredict(booster, dmat, 0, 0, 0, &out_len, &out_result);
-        XGDMatrixFree(dmat);
-
-        result.prob_down = out_result[0];
-        result.prob_hold = out_result[1];
-        result.prob_up = out_result[2];
-
-        int predicted_class = 0;
-        result.confidence = out_result[0];
-
-        if (out_result[1] > result.confidence) {
-            predicted_class = 1;
-            result.confidence = out_result[1];
-        }
-        if (out_result[2] > result.confidence) {
-            predicted_class = 2;
-            result.confidence = out_result[2];
-        }
-
-        result.prediction = predicted_class - 1;
-
+    if (features.size() != NUM_FEATURES) {
+        std::cerr << "Error: Expected " << NUM_FEATURES << " features, got " << features.size() << std::endl;
         return result;
     }
-};
 
-// read last line of CSV (without the target)
-std::vector<float> readLastLineFromCSV(const std::string& csv_path) {
+    DMatrixHandle dmat;
+    XGDMatrixCreateFromMat(features.data(), 1, NUM_FEATURES, -1, &dmat);
+
+    bst_ulong out_len;
+    const float* out_result;
+
+    XGBoosterPredict(booster, dmat, 0, 0, 0, &out_len, &out_result);
+    XGDMatrixFree(dmat);
+
+    result.prob_down = out_result[0];
+    result.prob_hold = out_result[1];
+    result.prob_up = out_result[2];
+
+    int predicted_class = 0;
+    result.confidence = out_result[0];
+
+    if (out_result[1] > result.confidence) {
+        predicted_class = 1;
+        result.confidence = out_result[1];
+    }
+    if (out_result[2] > result.confidence) {
+        predicted_class = 2;
+        result.confidence = out_result[2];
+    }
+
+    result.prediction = predicted_class - 1;  // 0->-1, 1->0, 2->1
+
+    return result;
+}
+
+std::vector<float> StockPredictor::readLastLineFromCSV(const std::string& csv_path) {
     std::ifstream file(csv_path);
     std::vector<float> features;
 
     if (!file.is_open()) {
-        std::cerr << "Error ouverture CSV: " << csv_path << std::endl;
+        std::cerr << "Error opening CSV: " << csv_path << std::endl;
         return features;
     }
 
     std::string line, last_line;
 
-    // Ignore the header
+    // Ignore header
     std::getline(file, line);
 
-    // Lire toutes les lignes pour trouver la derni�re
+    // Read all lines to find the last one
     while (std::getline(file, line)) {
         if (!line.empty()) {
             last_line = line;
@@ -140,17 +90,15 @@ std::vector<float> readLastLineFromCSV(const std::string& csv_path) {
     file.close();
 
     if (last_line.empty()) {
-        std::cerr << "CSV vide" << std::endl;
+        std::cerr << "CSV is empty" << std::endl;
         return features;
     }
 
-    // Parse the last line
+    // Parse the last line (60 features, ignore 61st column if it's the target)
     std::stringstream ss(last_line);
     std::string value;
 
-    // Lire the 60 first column (ignore the 61�me that is target)
-    for (int i = 0; i < 60; i++) {
-    
+    for (int i = 0; i < NUM_FEATURES; i++) {
         if (std::getline(ss, value, ',')) {
             try {
                 features.push_back(std::stof(value));
@@ -163,51 +111,10 @@ std::vector<float> readLastLineFromCSV(const std::string& csv_path) {
         }
     }
 
-    if (features.size() != 60) {
-        std::cerr << "Error: " << features.size() << " features read au lieu de 60" << std::endl;
-        
+    if (features.size() != NUM_FEATURES) {
+        std::cerr << "Error: Read " << features.size() << " features instead of " << NUM_FEATURES << std::endl;
         features.clear();
     }
 
     return features;
-}
-
-int main() {
-    StockPredictor predictor;
-
-    // Charge the model
-    if (!predictor.loadModel("../data/models/final_xgb_3cat.json")) {
-        std::cerr << "error while charging module" << std::endl;
-        return 1;
-    }
-
-    // read last line of the csv
-    std::string csv_path = "../data/csv/Coca/XGBoostdata.csv";
-    std::vector<float> features = readLastLineFromCSV(csv_path);
-
-    if (features.empty()) {
-        std::cerr << "error reading csv" << std::endl;
-        return 1;
-    }
-
-    std::cout << "\n" << features.size() << " features read of CSV" << std::endl;
-
-    // simple prediction
-    int prediction = predictor.predict(features);
-    std::cout << "\n== PREDICTION FOR THE NEXT DAY ==" << std::endl;
-    std::cout << "Direction: " << prediction;
-    if (prediction == -1) std::cout << " (DOWN - Expected decline)";
-    else if (prediction == 0) std::cout << " (HOLD - Expected Stability)";
-    else std::cout << " (UP - Expected increase)";
-    std::cout << std::endl;
-
-    //detailled prediction
-    auto result = predictor.predictWithProba(features);
-    std::cout << "\n=== PROBABILITIES ===" << std::endl;
-    std::cout << "  DOWN:  " << (result.prob_down * 100.0f) << "%" << std::endl;
-    std::cout << "  HOLD:  " << (result.prob_hold * 100.0f) << "%" << std::endl;
-    std::cout << "  UP:    " << (result.prob_up * 100.0f) << "%" << std::endl;
-    std::cout << "  Confidence: " << (result.confidence * 100.0f) << "%" << std::endl;
-
-    return 0;
 }
