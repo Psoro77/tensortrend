@@ -10,9 +10,13 @@ Original file is located at
 import pandas as pd
 import requests
 import json
+from dotenv import load_dotenv
+import os
 from pathlib import Path
 
-Api_key = "J3104D6AADVGYSV6"
+
+load_dotenv()
+Api_key = os.getenv("API_KEY1")
 symbol = "TSLA"
 interval = "daily"
 time_period = "5"
