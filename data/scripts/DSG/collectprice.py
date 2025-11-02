@@ -17,7 +17,7 @@ import os
 
 load_dotenv()
 Api_key = os.getenv("API_KEY1")
-symbol = "DSK"
+symbol = "DSK" # to change DSK seem to mot be suported
 interval = "daily"
 time_period = "5"
 series_type = "close"

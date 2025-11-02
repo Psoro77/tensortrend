@@ -617,7 +617,9 @@ def  join_DataStock( df_ADX :pd.DataFrame, df_APO :pd.DataFrame, df_BBANDS :pd.D
 
 df_complete= join_DataStock(df_ADX, df_APO, df_BBANDS, df_CCI, df_MACDEXT, df_OBV, df_OCLHV, df_RSI, df_STOCH, df_Shares, df_WMA)
 
-csv_path = current_dir / "completerawdata.csv"
-df_complete.to_csv(csv_path,  index=True, index_label="date")
+csv_folder = current_dir.parent.parent / "csv" / "DSG"
+csv_folder.mkdir(parents=True, exist_ok=True)
+csv_path = csv_folder / "completerawdata.csv"
 
+df_complete.to_csv(csv_path,  index=True, index_label="date")
 """file saved on google drive"""
