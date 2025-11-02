@@ -130,7 +130,7 @@ std::vector<float> readLastLineFromCSV(const std::string& csv_path) {
     // Ignore the header
     std::getline(file, line);
 
-    // Lire toutes les lignes pour trouver la dernière
+    // Lire toutes les lignes pour trouver la derniï¿½re
     while (std::getline(file, line)) {
         if (!line.empty()) {
             last_line = line;
@@ -148,7 +148,7 @@ std::vector<float> readLastLineFromCSV(const std::string& csv_path) {
     std::stringstream ss(last_line);
     std::string value;
 
-    // Lire the 60 first column (ignore the 61ème that is target)
+    // Lire the 60 first column (ignore the 61ï¿½me that is target)
     for (int i = 0; i < 60; i++) {
     
         if (std::getline(ss, value, ',')) {
@@ -176,17 +176,17 @@ int main() {
     StockPredictor predictor;
 
     // Charge the model
-    if (!predictor.loadModel("final_xgb.json")) {
-        std::cerr << "echec chargement modèle" << std::endl;
+    if (!predictor.loadModel("../data/models/final_xgb_3cat.json")) {
+        std::cerr << "error while charging module" << std::endl;
         return 1;
     }
 
     // read last line of the csv
-    std::string csv_path = "../../ML/data/XGBoostdata.csv";
+    std::string csv_path = "../data/csv/Coca/XGBoostdata.csv";
     std::vector<float> features = readLastLineFromCSV(csv_path);
 
     if (features.empty()) {
-        std::cerr << "echec lecture CSV" << std::endl;
+        std::cerr << "error reading csv" << std::endl;
         return 1;
     }
 
