@@ -172,8 +172,8 @@ void MainWindow::displayChart(const QVector<PriceData> &data) {
     series->setName("Close Price");
 
     // 3. Remplir la série avec les données
-    // (Limiter aux 90 derniers jours pour la lisibilité)
-    int startIndex = qMax(0, data.size() - 90);
+    // (Limiter aux 120 derniers jours pour la lisibilité)
+    int startIndex = qMax(0, data.size() - 120);
 
     for (int i = startIndex; i < data.size(); ++i) {
         series->append(data[i].date.toMSecsSinceEpoch(), data[i].close);
