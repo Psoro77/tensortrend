@@ -4,6 +4,8 @@
 
 #include <QMainWindow>
 #include <QtCharts>
+#include <QVector>
+#include <QDateTime>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,12 +18,25 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void onPredictClicked();  // Slot pour le bouton Predict
+
 private:
     Ui::MainWindow *ui;
     QChartView *chartView;
     QChart *chart;
 
-    void setupChart();  // Fonction pour initialiser le chart
+    // Structure pour stocker les données de prix
+    struct PriceData {
+        QDateTime date;
+        double close;
+    };
+
+    void setupChart();
+    void setupConnections();  // Pour connecter les signaux
+    QString getStockFolder();  // Récupérer le nom du dossier selon le stock sélectionné
+    QVector<PriceData> readPriceCSV(const QString &csvPath);  // Lire le CSV
+    void displayChart(const QVector<PriceData> &data);  // Afficher le chart
 };
 
 #endif
