@@ -1,3 +1,4 @@
 .env
 *.env
 data/csv/*.csv
+app/src/build
