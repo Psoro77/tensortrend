@@ -15,7 +15,7 @@ current_dir = Path(__file__).parent
 
 """Getting the data saved from the fetch"""
 
-fetch_csv_path = current_dir / "completerawdata.csv"
+fetch_csv_path = current_dir.parent.parent/ "csv" / "Nvidia" / "completerawdata.csv"
 
 df_raw = pd.read_csv(fetch_csv_path)
 
@@ -171,9 +171,9 @@ df_normalizedLSTMdata['last_target'] = df_normalizedLSTMdata['last_target'].fill
 
 
 
-LSTMpath = current_dir / "LSTMdata.csv"
-XGBoostpath = current_dir / "XGBoostdata.csv"
-XGBoostv2path = current_dir / "xgboostv2.csv"
+LSTMpath = current_dir.parent.parent / "LSTMdata.csv"
+XGBoostpath = current_dir.parent.parent / "XGBoostdata.csv"
+XGBoostv2path = current_dir.parent.parent / "xgboostv2.csv"
 
 
 
