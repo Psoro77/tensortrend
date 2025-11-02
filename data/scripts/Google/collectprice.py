@@ -59,5 +59,9 @@ df_price['close'] = df_price['close'].fillna(method='bfill').fillna(method='ffil
 
 df_price
 
-savecsv = current_dir / "Google_prices.csv"
+csv_folder = current_dir.parent.parent / "csv" / "Google"
+csv_folder.mkdir(parents=True, exist_ok=True)
+savecsv = csv_folder / "Google_prices.csv"
+
+
 df_price.to_csv(savecsv, index = True)

@@ -33,7 +33,6 @@ def retriveOCLHV( symbol : str,outputsize:str, Api_key : str  ) ->dict:
   return parsedata
 
 data0 =retriveOCLHV(symbol,outputsize , Api_key)
-
 time_series = data0["Time Series (Daily)"]
 df_price= pd.DataFrame.from_dict(time_series, orient="index")
 df_price.columns = ["open", "high", "low", "close", "volume"]
@@ -59,5 +58,9 @@ df_price['close'] = df_price['close'].fillna(method='bfill').fillna(method='ffil
 
 df_price
 
-savecsv = current_dir / "DSG_prices.csv"
+
+csv_folder = current_dir.parent.parent / "csv" / "DSG"
+csv_folder.mkdir(parents=True, exist_ok=True)
+savecsv = csv_folder / "DSG_prices.csv"
+
 df_price.to_csv(savecsv, index = True)
