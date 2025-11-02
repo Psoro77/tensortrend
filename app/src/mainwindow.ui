@@ -95,7 +95,7 @@ font-weight: bold;
 color: #333333;</string>
          </property>
          <property name="text">
-          <string>Stock Name:</string>
+          <string>Select a stock to generate a prediction and visualize</string>
          </property>
         </widget>
        </item>
@@ -287,11 +287,14 @@ QPushButton:pressed {
         <widget class="QLabel" name="lblPredictionTitle">
          <property name="styleSheet">
           <string notr="true">font-size: 14pt; 
-font-weight: bold; 
-color: #333333;</string>
+            font-weight: bold; 
+            color: #333333;</string>
          </property>
          <property name="text">
           <string>📊 Prediction Result</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
@@ -420,7 +423,7 @@ font-weight: bold;
 color: #f57c00;</string>
               </property>
               <property name="text">
-               <string>➡️ HOLD</string>
+               <string>➡️ STABLE</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -554,6 +557,9 @@ color: #333333;</string>
          </property>
          <property name="text">
           <string> Stock Price History</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
         </widget>
        </item>
