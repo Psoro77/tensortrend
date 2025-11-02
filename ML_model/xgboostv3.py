@@ -21,6 +21,7 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import uniform, randint
+from pathlib import Path
 
 
 df = pd.read_csv('/content/drive/My Drive/normalizedXGBoost.csv')
@@ -291,4 +292,6 @@ plt.show()
 print("✓ Visualisations générées avec succès!")
 
 booster = final_model.get_booster()
-booster.save_model("/content/drive/MyDrive/final_xgb.json")
+current_dir =Path(__file__).parent
+destination_dir = current_dir.parent / "models" / "final_xgb_3cat.json"
+booster.save_model(destination_dir)
