@@ -158,7 +158,7 @@ QComboBox::down-arrow {
          </item>
          <item>
           <property name="text">
-           <string>Dick's Sporting Goods</string>
+           <string>Johnson and Johnson</string>
           </property>
          </item>
         </widget>

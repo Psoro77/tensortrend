@@ -1,4 +1,7 @@
 .env
 *.env
-data/csv/*.csv
-app/src/build
+data/csv/*
+app/src/build/*
+app/src/.qtcreator
+app/src/.vs
+app/src/out

@@ -126,7 +126,7 @@ QString MainWindow::getStockFolder() {
     if (selectedStock.contains("Tesla")) return "Tesla";
     if (selectedStock.contains("Google")) return "Google";
     if (selectedStock.contains("NVIDIA")) return "Nvidia";
-    if (selectedStock.contains("Dick's")) return "DSG";
+    if (selectedStock.contains("Johnson and Johnson")) return "Johnson and Johnson";
 
     return "";
 }
