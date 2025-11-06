@@ -11,5 +11,16 @@ for stockname in stocklist :
     print( df_raw.shape)
     df = pd.concat([df,  df_raw], ignore_index= True)
 print(df.isna().any().any())
-path = current_dir.parent.parent / "csv" / "Final_merged"/ "merged_data.csv"
+path = current_dir.parent.parent / "csv" / "Final_merged"/ "merged_XGB_data.csv"
+df.to_csv(path, index=False)
+
+
+
+for stockname in stocklist :
+    fetch_csv_path = current_dir.parent.parent/ "csv" / f"{stockname}" / "LSTMdata.csv"
+    df_raw = pd.read_csv(fetch_csv_path)
+    print( df_raw.shape)
+    df = pd.concat([df,  df_raw], ignore_index= True)
+print(df.isna().any().any())
+path = current_dir.parent.parent / "csv" / "Final_merged"/ "merged_LSTM_data.csv"
 df.to_csv(path, index=False)
