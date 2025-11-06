@@ -181,7 +181,7 @@ The trained model will be saved to `data/models/final_xgb_3cat.json`
 ### 1. Data Collection
 - Historical price data from financial APIs
 - Technical indicators calculation
-- Feature engineering (60 features)
+- Feature engineering ( 19 features)
 
 ### 2. Data Processing
 - Normalization and scaling
@@ -190,7 +190,7 @@ The trained model will be saved to `data/models/final_xgb_3cat.json`
 
 ### 3. Model Training
 - **Algorithm**: XGBoost Classifier
-- **Features**: 60 technical indicators
+- **Features**: 23 technical indicators -> 60 features
 - **Classes**: 3 (Down, Hold, Up)
 - **Output**: Probability distribution
 
@@ -204,16 +204,10 @@ The trained model will be saved to `data/models/final_xgb_3cat.json`
 ## 📸 Screenshots
 
 ### Main Interface
-![Main Interface](./Documentation/screenshots/main_interface.png)
+![Main Interface](./Documentation/screenshots/appgif.gif)
 *Select stock and view predictions with confidence levels*
-
-### Prediction Results
-![Prediction](./Documentation/screenshots/prediction.png)
 *Real-time prediction with probability distribution*
 
-### Price Chart
-![Chart](./Documentation/screenshots/chart.png)
-*90-day historical price visualization*
 
 ---
 
@@ -398,5 +392,6 @@ If you find this project useful, please consider giving it a star! ⭐
 **Built with ❤️ using Qt and XGBoost**
 
 ---
+
 
 *Disclaimer: This software is for educational purposes only. Do not use for actual trading without proper risk assessment. Past performance does not guarantee future results.*
