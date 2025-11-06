@@ -16,7 +16,7 @@ from pathlib import Path
 
 
 load_dotenv()
-Api_key = os.getenv("API_KEY1")
+Api_key = os.getenv("API_KEY3")
 symbol = "TSLA"
 interval = "daily"
 time_period = "5"

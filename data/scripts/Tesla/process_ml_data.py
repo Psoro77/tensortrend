@@ -171,9 +171,9 @@ df_normalizedLSTMdata['last_target'] = df_normalizedLSTMdata['last_target'].fill
 
 
 
-LSTMpath = current_dir.parent.parent / "LSTMdata.csv"
-XGBoostpath = current_dir.parent.parent / "XGBoostdata.csv"
-XGBoostv2path = current_dir.parent.parent / "xgboostv2.csv"
+LSTMpath = current_dir.parent.parent / "csv" / "Tesla"/ "LSTMdata.csv"
+XGBoostpath = current_dir.parent.parent /"csv" / "Tesla"/ "XGBoostdata.csv"
+XGBoostv2path = current_dir.parent.parent / "csv" / "Tesla"/ "xgboostv2.csv"
 
 
 

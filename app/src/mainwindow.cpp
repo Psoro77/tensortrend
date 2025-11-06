@@ -16,6 +16,19 @@ MainWindow::MainWindow(QWidget *parent)
 
     setupChart();
     setupConnections();
+
+    // Charger le modèle XGBoost
+    QString modelPath = QCoreApplication::applicationDirPath() + "/../../../../data/models/final_xgb_3cat.json";
+
+    qDebug() << "Loading model from:" << modelPath;
+
+    if (!predictor.loadModel(modelPath.toStdString())) {
+        QMessageBox::critical(this, "Error",
+                              QString("Failed to load ML model from:\n%1").arg(modelPath));
+    } else {
+        qDebug() << "Model loaded successfully!";
+        ui->statusbar->showMessage("Model loaded successfully");
+    }
 }
 
 MainWindow::~MainWindow() {
@@ -38,15 +51,16 @@ void MainWindow::setupChart() {
 }
 
 void MainWindow::setupConnections() {
-    // Connecter le bouton Predict
     connect(ui->btnPredict, &QPushButton::clicked,
             this, &MainWindow::onPredictClicked);
+    connect(ui->btnClear, &QPushButton::clicked,
+            this, &MainWindow::onClearClicked);
 }
 
 void MainWindow::onPredictClicked() {
-    qDebug() << "Predict button clicked!";
-    qDebug() << "Current working directory:" << QDir::currentPath();
-    // 1. Récupérer le stock sélectionné
+    qDebug() << "=== Predict button clicked ===";
+
+    // 1. Vérifier la sélection
     QString selectedStock = ui->comboBoxStock->currentText();
 
     if (selectedStock == "Select a stock...") {
@@ -54,39 +68,54 @@ void MainWindow::onPredictClicked() {
         return;
     }
 
-    // 2. Récupérer le nom du dossier
     QString stockFolder = getStockFolder();
-
     if (stockFolder.isEmpty()) {
         QMessageBox::warning(this, "Error", "Unknown stock selected!");
         return;
     }
 
-    qDebug() << "Loading data for:" << stockFolder;
+    qDebug() << "Processing stock:" << stockFolder;
 
-    // 3. Construire le chemin du CSV
-    QString csvPath = QString("../../../../data/csv/%1/%1_prices.csv").arg(stockFolder);
-
-    qDebug() << "CSV Path:" << csvPath;
-
-    // 4. Lire les données
-    QVector<PriceData> priceData = readPriceCSV(csvPath);
+    // 2. Afficher le graphique des prix
+    QString pricesCsvPath = QString("../../../../data/csv/%1/%1_prices.csv").arg(stockFolder);
+    QVector<PriceData> priceData = readPriceCSV(pricesCsvPath);
 
     if (priceData.isEmpty()) {
         QMessageBox::warning(this, "Error",
-                             QString("Failed to load data from:\n%1").arg(csvPath));
+                             QString("Failed to load price data from:\n%1").arg(pricesCsvPath));
         return;
     }
 
-    qDebug() << "Data loaded successfully! Total rows:" << priceData.size();
-
-    // 5. Afficher le chart
     displayChart(priceData);
+    qDebug() << "Chart displayed successfully";
 
-    // 6. Message de succès
-    ui->statusbar->showMessage(QString("Loaded %1 price data (%2 days)")
-                                   .arg(stockFolder)
-                                   .arg(priceData.size()));
+    // 3. Faire la prédiction
+    QString xgboostCsvPath = QString("../../../../data/csv/%1/XGBoostdata.csv").arg(stockFolder);
+
+    qDebug() << "Reading features from:" << xgboostCsvPath;
+
+    std::vector<float> features = predictor.readLastLineFromCSV(xgboostCsvPath.toStdString());
+
+    if (features.empty()) {
+        QMessageBox::warning(this, "Error",
+                             QString("Failed to read features from:\n%1").arg(xgboostCsvPath));
+        return;
+    }
+
+    qDebug() << "Features read successfully:" << features.size();
+
+    // 4. Obtenir la prédiction
+    StockPredictor::PredictionResult result = predictor.predictWithProba(features);
+
+    qDebug() << "Prediction:" << result.prediction;
+    qDebug() << "Probabilities - DOWN:" << result.prob_down
+             << "HOLD:" << result.prob_hold
+             << "UP:" << result.prob_up;
+
+    // 5. Afficher les résultats
+    displayPrediction(result);
+
+    ui->statusbar->showMessage(QString("Prediction completed for %1").arg(stockFolder));
 }
 
 QString MainWindow::getStockFolder() {
@@ -201,4 +230,70 @@ void MainWindow::displayChart(const QVector<PriceData> &data) {
     chart->setTitle(QString("%1 - Last %2 Days").arg(stockName).arg(data.size() - startIndex));
 
     qDebug() << "Chart updated successfully!";
+}
+void MainWindow::displayPrediction(const StockPredictor::PredictionResult &result) {
+    // 1. Texte de prédiction
+    QString predictionText;
+    QString emoji;
+
+    if (result.prediction == -1) {
+        predictionText = "📉 The model predicts a DECLINE for the next trading day.";
+        emoji = "📉";
+    } else if (result.prediction == 0) {
+        predictionText = "➡️ The model predicts STABILITY for the next trading day.";
+        emoji = "➡️";
+    } else {
+        predictionText = "📈 The model predicts an INCREASE for the next trading day.";
+        emoji = "📈";
+    }
+
+    predictionText += QString("\nConfidence: %1%").arg(result.confidence * 100, 0, 'f', 1);
+
+    ui->lblPredictionText->setText(predictionText);
+
+    // 2. Mettre à jour les probabilités
+    ui->lblDownValue->setText(QString("%1%").arg(result.prob_down * 100, 0, 'f', 1));
+    ui->lblHoldValue->setText(QString("%1%").arg(result.prob_hold * 100, 0, 'f', 1));
+    ui->lblUpValue->setText(QString("%1%").arg(result.prob_up * 100, 0, 'f', 1));
+
+    // 3. Mettre en évidence la prédiction principale
+    // Reset tous les styles
+    ui->frameDown->setStyleSheet("QFrame { background-color: #ffebee; border-radius: 8px; border: 2px solid #ef5350; }");
+    ui->frameHold->setStyleSheet("QFrame { background-color: #fff3e0; border-radius: 8px; border: 2px solid #ff9800; }");
+    ui->frameUp->setStyleSheet("QFrame { background-color: #e8f5e9; border-radius: 8px; border: 2px solid #66bb6a; }");
+
+    // Mettre en évidence la prédiction
+    if (result.prediction == -1) {
+        ui->frameDown->setStyleSheet("QFrame { background-color: #ffcdd2; border-radius: 8px; border: 3px solid #d32f2f; }");
+    } else if (result.prediction == 0) {
+        ui->frameHold->setStyleSheet("QFrame { background-color: #ffe0b2; border-radius: 8px; border: 3px solid #f57c00; }");
+    } else {
+        ui->frameUp->setStyleSheet("QFrame { background-color: #c8e6c9; border-radius: 8px; border: 3px solid #388e3c; }");
+    }
+}
+void MainWindow::onClearClicked() {
+    // Réinitialiser le texte de prédiction
+    ui->lblPredictionText->setText("No prediction available. Select a stock and click Predict.");
+
+    // Réinitialiser les probabilités
+    ui->lblDownValue->setText("---%");
+    ui->lblHoldValue->setText("---%");
+    ui->lblUpValue->setText("---%");
+
+    // Réinitialiser les styles
+    ui->frameDown->setStyleSheet("QFrame { background-color: #ffebee; border-radius: 8px; border: 2px solid #ef5350; }");
+    ui->frameHold->setStyleSheet("QFrame { background-color: #fff3e0; border-radius: 8px; border: 2px solid #ff9800; }");
+    ui->frameUp->setStyleSheet("QFrame { background-color: #e8f5e9; border-radius: 8px; border: 2px solid #66bb6a; }");
+
+    // Nettoyer le chart
+    chart->removeAllSeries();
+    foreach (QAbstractAxis *axis, chart->axes()) {
+        chart->removeAxis(axis);
+    }
+    chart->setTitle("Stock Price History");
+
+    // Réinitialiser la sélection
+    ui->comboBoxStock->setCurrentIndex(0);
+
+    ui->statusbar->showMessage("Results cleared");
 }
