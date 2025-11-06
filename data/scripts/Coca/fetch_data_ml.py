@@ -18,10 +18,10 @@ import os
 
 
 load_dotenv()
-# Api_key = os.getenv("API_KEY1")
-Api_key = os.getenv("API_KEY2")
+Api_key = os.getenv("API_KEY1")
+# Api_key = os.getenv("API_KEY2")
 # Api_key = os.getenv("API_KEY3")
-symbol = "Coca"
+symbol = "KO"
 interval = "daily"
 time_period = "5"
 series_type = "close"

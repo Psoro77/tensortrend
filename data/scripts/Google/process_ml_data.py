@@ -32,6 +32,8 @@ df_raw['day_var_range']= (df_raw['high']-df_raw['low'])/df_raw['close']
 df_raw =df_raw.drop('high', axis=1)
 df_raw =df_raw.drop('low', axis=1)
 
+df_raw['stock_id']=1
+
 df_raw['OBV'] = np.sign(df_raw['OBV']) * np.log1p(np.abs(df_raw['OBV']))
 df_raw['volume']= np.log1p(df_raw['volume'])
 
@@ -81,7 +83,7 @@ lag_features = ['close', 'volume', 'RSI', 'ADX', 'MACD_Signal',
 
 for feature in lag_features:
         if feature in df_raw.columns:
-            for lag in range(1, 6):
+            for lag in range(1, 60):
                 df_xgboost[f'{feature}_lag{lag}'] = df_xgboost[feature].shift(lag)
 
 df_xgboost = df_xgboost.fillna(method='bfill').fillna(method='ffill')
