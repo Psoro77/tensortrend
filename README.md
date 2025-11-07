@@ -336,7 +336,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Qt Framework** - For the excellent GUI toolkit
 - **XGBoost** - For the powerful ML library
-- **yfinance** - For stock data API
 - **Qt Charts** - For beautiful visualizations
 
 ---
@@ -345,9 +344,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Project Maintainer**: Your Name
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
-- LinkedIn: [Your Profile](https://linkedin.com/in/yourprofile)
+- LinkedIn: [Your Profile](https://www.linkedin.com/in/b2o-7a9074372/)
 
 ---
 
@@ -355,23 +352,22 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ### Version 1.0 (Current)
 - ✅ Basic prediction functionality
+- ✅ XGBOOST used
 - ✅ 5 supported stocks
 - ✅ Qt-based GUI
 - ✅ Historical price charts
 
 ### Version 1.1 (Planned)
 - [ ] Real-time data updates
-- [ ] More technical indicators
-- [ ] Portfolio tracking
-- [ ] Export predictions to CSV
-
-### Version 2.0 (Future)
 - [ ] LSTM model integration
 - [ ] Sentiment analysis from news
-- [ ] Multi-timeframe predictions
-- [ ] Mobile app (iOS/Android)
-- [ ] Web dashboard
 
+
+### Version 2.0 (Future)
+- [ ] Mobile app (iOS/Android)
+- [ ] Portfolio tracking
+- [ ] Multi-timeframe predictions
+- [ ] Web dashboard
 ---
 
 ## ⭐ Star History
@@ -382,14 +378,10 @@ If you find this project useful, please consider giving it a star! ⭐
 
 ## 📚 Documentation
 
-- [GUI Setup Guide](./Documentation/GUI_SETUP_GUIDE.md)
-- [API Documentation](./Documentation/API.md)
-- [Model Training Guide](./Documentation/MODEL_TRAINING.md)
-- [Data Collection Guide](./Documentation/DATA_COLLECTION.md)
 
 ---
 
-**Built with ❤️ using Qt and XGBoost**
+**Built with ❤️**
 
 ---
 
