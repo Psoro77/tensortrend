@@ -122,8 +122,11 @@ df_normalizedXGBoost['target'] = 0
 threshold = 0.002
 df_normalizedXGBoost['price_change'] = df_normalizedXGBoost['close'].diff()
 
-df_normalizedXGBoost['target'] = np.where(df_normalizedXGBoost['price_change'] > threshold * df_normalizedXGBoost['close'].shift(1), 1,
-                            np.where(df_normalizedXGBoost['price_change'] < -threshold * df_normalizedXGBoost['close'].shift(1), -1, 0))
+df_normalizedXGBoost['target'] = np.where(
+    df_normalizedXGBoost['price_change'] > df_normalizedXGBoost['close'].shift(1),
+    1,   # Up
+    0   # Down
+)
 
 # Drop the temporary 'price_change' column
 df_normalizedXGBoost = df_normalizedXGBoost.drop('price_change', axis=1)
