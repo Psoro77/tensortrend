@@ -83,7 +83,7 @@ lag_features = ['close', 'volume', 'RSI', 'ADX', 'MACD_Signal',
 
 for feature in lag_features:
         if feature in df_raw.columns:
-            for lag in range(1, 60):
+            for lag in range(1, 6):
                 df_xgboost[f'{feature}_lag{lag}'] = df_xgboost[feature].shift(lag)
 
 df_xgboost = df_xgboost.fillna(method='bfill').fillna(method='ffill')
