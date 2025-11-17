@@ -84,7 +84,7 @@ lag_features = ['close', 'volume', 'RSI', 'ADX', 'MACD_Signal',
 
 for feature in lag_features:
         if feature in df_raw.columns:
-            for lag in range(1, 60):  #laag modified to 60
+            for lag in range(0, 5):  
                 df_xgboost[f'{feature}_lag{lag}'] = df_xgboost[feature].shift(lag)
 
 df_xgboost = df_xgboost.fillna(method='bfill').fillna(method='ffill')
@@ -179,7 +179,9 @@ XGBoostpath = current_dir.parent.parent / "csv" / "Coca" / "XGBoostdata.csv"
 XGBoostv2path = current_dir.parent.parent / "csv" / "Coca" / "xgboostv2.csv"
 
 
-
-df_normalizedLSTMdata.to_csv(LSTMpath, index=False)
-df_normalizedXGBoost.to_csv(XGBoostpath, index=False)
-df_normalizedxgboostv2.to_csv(XGBoostv2path, index=False)
+try :
+    df_normalizedLSTMdata.to_csv(LSTMpath, index=False)
+    df_normalizedXGBoost.to_csv(XGBoostpath, index=False)
+    df_normalizedxgboostv2.to_csv(XGBoostv2path, index=False)
+except :
+    print('error saving')

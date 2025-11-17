@@ -32,35 +32,35 @@ def retriveOCLHV( symbol : str,outputsize:str, Api_key : str  ) ->dict:
   parsedata = json.loads(data)
   return parsedata
 
-data0 =retriveOCLHV(symbol,outputsize , Api_key)
-time_series = data0["Time Series (Daily)"]
-df_price= pd.DataFrame.from_dict(time_series, orient="index")
-df_price.columns = ["open", "high", "low", "close", "volume"]
+try :
+  data0 =retriveOCLHV(symbol,outputsize , Api_key)
+  time_series = data0["Time Series (Daily)"]
+  df_price= pd.DataFrame.from_dict(time_series, orient="index")
+  df_price.columns = ["open", "high", "low", "close", "volume"]
 
-df_price.index = pd.to_datetime(df_price.index)
-df_price.index.name = 'date'
+  df_price.index = pd.to_datetime(df_price.index)
+  df_price.index.name = 'date'
 
-#convert values from string to float :
-df_price["close"] = pd.to_numeric(df_price["close"], errors="coerce")
-df_price =df_price.drop(columns=["open", "high", "low","volume"])
-
-
-df_price = df_price.sort_index()
-
-df_price['close'] = df_price['close'].interpolate(method='time')
+  #convert values from string to float :
+  df_price["open"] = pd.to_numeric(df_price["open"], errors="coerce")
+  df_price =df_price.drop(columns=["close", "high", "low","volume"])
 
 
+  df_price = df_price.sort_index()
 
-# if their is still NAN at the extremities we fill them
-df_price['close'] = df_price['close'].fillna(method='bfill').fillna(method='ffill')
+  df_price['open'] = df_price['open'].interpolate(method='time')
 
 
 
-df_price
+  # if their is still NAN at the extremities we fill them
+  df_price['open'] = df_price['open'].fillna(method='bfill').fillna(method='ffill')
 
+  csv_folder = current_dir.parent.parent / "csv" / "Johnson and Johnson"
+  csv_folder.mkdir(parents=True, exist_ok=True)
+  savecsv = csv_folder / "Johnson and Johnson_prices.csv"
 
-csv_folder = current_dir.parent.parent / "csv" / "Johnson and Johnson"
-csv_folder.mkdir(parents=True, exist_ok=True)
-savecsv = csv_folder / "Johnson and Johnson_prices.csv"
-
-df_price.to_csv(savecsv, index = True)
+  df_price.to_csv(savecsv, index = True)
+except :
+  print("API Error")
+else:
+  print("Execution succsesful")
