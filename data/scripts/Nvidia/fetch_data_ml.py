@@ -18,10 +18,10 @@ import os
 
 
 load_dotenv()
-# Api_key = os.getenv("API_KEY1")
-Api_key = os.getenv("API_KEY2")
+Api_key = os.getenv("API_KEY1")
+# Api_key = os.getenv("API_KEY2")
 # Api_key = os.getenv("API_KEY3")
-symbol = "NVDA"
+symbol = "KO"
 interval = "daily"
 time_period = "5"
 series_type = "close"
@@ -180,312 +180,315 @@ def retrieveAPO(symbol: str, api_key: str, interval : str, series_type="close", 
     data = response.text
     parsedata = json.loads(data)
     return parsedata
+try :
+    data0 =retriveOCLHV(symbol,outputsize , Api_key)
 
-data0 =retriveOCLHV(symbol,outputsize , Api_key)
+    time_series = data0["Time Series (Daily)"]
+    df_OCLHV = pd.DataFrame.from_dict(time_series, orient="index")
+    df_OCLHV.columns = ["open", "high", "low", "close", "volume"]
 
-time_series = data0["Time Series (Daily)"]
-df_OCLHV = pd.DataFrame.from_dict(time_series, orient="index")
-df_OCLHV.columns = ["open", "high", "low", "close", "volume"]
+    df_OCLHV.index = pd.to_datetime(df_OCLHV.index)
+    df_OCLHV.index.name = 'date'
 
-df_OCLHV.index = pd.to_datetime(df_OCLHV.index)
-df_OCLHV.index.name = 'date'
+    #convert values from string to float :
+    df_OCLHV["open"] = pd.to_numeric(df_OCLHV["open"], errors="coerce")
+    df_OCLHV["close"] = pd.to_numeric(df_OCLHV["close"], errors="coerce")
+    df_OCLHV["high"] = pd.to_numeric(df_OCLHV["high"], errors="coerce")
+    df_OCLHV["low"] = pd.to_numeric(df_OCLHV["low"], errors="coerce")
+    df_OCLHV["volume"] = pd.to_numeric(df_OCLHV["volume"], errors="coerce")
 
-#convert values from string to float :
-df_OCLHV["open"] = pd.to_numeric(df_OCLHV["open"], errors="coerce")
-df_OCLHV["close"] = pd.to_numeric(df_OCLHV["close"], errors="coerce")
-df_OCLHV["high"] = pd.to_numeric(df_OCLHV["high"], errors="coerce")
-df_OCLHV["low"] = pd.to_numeric(df_OCLHV["low"], errors="coerce")
-df_OCLHV["volume"] = pd.to_numeric(df_OCLHV["volume"], errors="coerce")
+    df_OCLHV = df_OCLHV.sort_index()
 
-df_OCLHV = df_OCLHV.sort_index()
+    df_OCLHV['open'] = df_OCLHV['open'].interpolate(method='time')
+    df_OCLHV['close'] = df_OCLHV['close'].interpolate(method='time')
+    df_OCLHV['high'] = df_OCLHV['high'].interpolate(method='time')
+    df_OCLHV['low'] = df_OCLHV['low'].interpolate(method='time')
+    df_OCLHV['volume'] = df_OCLHV['volume'].interpolate(method='time')
 
-df_OCLHV['open'] = df_OCLHV['open'].interpolate(method='time')
-df_OCLHV['close'] = df_OCLHV['close'].interpolate(method='time')
-df_OCLHV['high'] = df_OCLHV['high'].interpolate(method='time')
-df_OCLHV['low'] = df_OCLHV['low'].interpolate(method='time')
-df_OCLHV['volume'] = df_OCLHV['volume'].interpolate(method='time')
 
+    # if their is still NAN at the extremities we fill them
+    df_OCLHV['open'] = df_OCLHV['open'].fillna(method='bfill').fillna(method='ffill')
 
-# if their is still NAN at the extremities we fill them
-df_OCLHV['open'] = df_OCLHV['open'].fillna(method='bfill').fillna(method='ffill')
+    data1 =retriveShares(symbol , Api_key)
 
-data1 =retriveShares(symbol , Api_key)
+    records = []
+    for item in data1['data']:
+        records.append({
+            'date': item['date'],
+            'shares_outstanding_basic': item['shares_outstanding_basic']
+        })
+    df_Shares = pd.DataFrame(records)
 
-records = []
-for item in data1['data']:
-    records.append({
-        'date': item['date'],
-        'shares_outstanding_basic': item['shares_outstanding_basic']
-    })
-df_Shares = pd.DataFrame(records)
+    df_Shares['date'] = pd.to_datetime(df_Shares['date'])
+    df_Shares["shares_outstanding_basic"] = pd.to_numeric(df_Shares["shares_outstanding_basic"], errors="coerce")
+    # define date as index
+    df_Shares.set_index('date', inplace=True)
 
-df_Shares['date'] = pd.to_datetime(df_Shares['date'])
-df_Shares["shares_outstanding_basic"] = pd.to_numeric(df_Shares["shares_outstanding_basic"], errors="coerce")
-# define date as index
-df_Shares.set_index('date', inplace=True)
+    # sort by date
+    df_Shares.sort_index(inplace=True)
+    df_Shares['shares_outstanding_basic'] = df_Shares['shares_outstanding_basic'].interpolate(method='time')
 
-# sort by date
-df_Shares.sort_index(inplace=True)
-df_Shares['shares_outstanding_basic'] = df_Shares['shares_outstanding_basic'].interpolate(method='time')
+    # if their is still NAN at the extremities we fill them
+    df_Shares['shares_outstanding_basic'] = df_Shares['shares_outstanding_basic'].fillna(method='bfill').fillna(method='ffill')
+    df_Shares.tail()
 
-# if their is still NAN at the extremities we fill them
-df_Shares['shares_outstanding_basic'] = df_Shares['shares_outstanding_basic'].fillna(method='bfill').fillna(method='ffill')
-df_Shares.tail()
+    data3 = retriveWMA(symbol,Api_key,interval, time_period, outputsize)
 
-data3 = retriveWMA(symbol,Api_key,interval, time_period, outputsize)
+    records = []
+    wma_data = data3['Technical Analysis: WMA']
+    for date, values in wma_data.items():
+        records.append({
+            'date': date,
+            'WMA': values['WMA']
+        })
+    df_WMA = pd.DataFrame(records)
+    df_WMA['date'] = pd.to_datetime(df_WMA['date'])
+    df_WMA['WMA']= pd.to_numeric(df_WMA['WMA'], errors='coerce')
+    # defien date as index
+    df_WMA.set_index('date', inplace=True)
 
-records = []
-wma_data = data3['Technical Analysis: WMA']
-for date, values in wma_data.items():
-    records.append({
-        'date': date,
-        'WMA': values['WMA']
-    })
-df_WMA = pd.DataFrame(records)
-df_WMA['date'] = pd.to_datetime(df_WMA['date'])
-df_WMA['WMA']= pd.to_numeric(df_WMA['WMA'], errors='coerce')
-# defien date as index
-df_WMA.set_index('date', inplace=True)
+    # sort by date
+    df_WMA.sort_index(inplace=True)
+    df_WMA['WMA'] = df_WMA['WMA'].interpolate(method='time')
 
-# sort by date
-df_WMA.sort_index(inplace=True)
-df_WMA['WMA'] = df_WMA['WMA'].interpolate(method='time')
+    # # if their is still NAN at the extremities we fill them
+    df_WMA['WMA'] = df_WMA['WMA'].fillna(method='bfill').fillna(method='ffill')
 
-# # if their is still NAN at the extremities we fill them
-df_WMA['WMA'] = df_WMA['WMA'].fillna(method='bfill').fillna(method='ffill')
+    data4= retrieveRSI(symbol , Api_key, interval, outputsize,series_type,time_period)
 
-data4= retrieveRSI(symbol , Api_key, interval, outputsize,series_type,time_period)
+    records = []
+    rsi_data = data4['Technical Analysis: RSI']
+    for date, values in rsi_data.items():
+        records.append({
+            'date': date,
+            'RSI': values['RSI']
+        })
+    df_RSI = pd.DataFrame(records)
+    df_RSI['date'] = pd.to_datetime(df_RSI['date'])
+    df_RSI['RSI'] = pd.to_numeric(df_RSI['RSI'])
 
-records = []
-rsi_data = data4['Technical Analysis: RSI']
-for date, values in rsi_data.items():
-    records.append({
-        'date': date,
-        'RSI': values['RSI']
-    })
-df_RSI = pd.DataFrame(records)
-df_RSI['date'] = pd.to_datetime(df_RSI['date'])
-df_RSI['RSI'] = pd.to_numeric(df_RSI['RSI'])
 
+    df_RSI.set_index('date', inplace=True)
 
-df_RSI.set_index('date', inplace=True)
 
+    df_RSI.sort_index(inplace=True)
+    df_RSI['RSI'] = df_RSI['RSI'].interpolate(method='time')
 
-df_RSI.sort_index(inplace=True)
-df_RSI['RSI'] = df_RSI['RSI'].interpolate(method='time')
 
+    df_RSI['RSI'] = df_RSI['RSI'].fillna(method='bfill').fillna(method='ffill')
+    df_RSI.tail()
 
-df_RSI['RSI'] = df_RSI['RSI'].fillna(method='bfill').fillna(method='ffill')
-df_RSI.tail()
+    data5 = retrieveBBANDS(symbol, Api_key,outputsize,interval,series_type,time_period)
 
-data5 = retrieveBBANDS(symbol, Api_key,outputsize,interval,series_type,time_period)
+    records = []
 
-records = []
+    bbands_data = data5["Technical Analysis: BBANDS"]
 
-bbands_data = data5["Technical Analysis: BBANDS"]
+    for date, values in bbands_data.items():
+        records.append({
+            'date': date,
+            'Real Upper Band': values["Real Upper Band"],
+            'Real Middle Band': values["Real Middle Band"],
+            'Real Lower Band': values["Real Lower Band"]
+        })
 
-for date, values in bbands_data.items():
-    records.append({
-        'date': date,
-        'Real Upper Band': values["Real Upper Band"],
-        'Real Middle Band': values["Real Middle Band"],
-        'Real Lower Band': values["Real Lower Band"]
-    })
+    df_BBANDS = pd.DataFrame(records)
 
-df_BBANDS = pd.DataFrame(records)
+    df_BBANDS['date'] = pd.to_datetime(df_BBANDS['date'])
+    df_BBANDS["Real Upper Band"] = pd.to_numeric(df_BBANDS["Real Upper Band"], errors="coerce")
+    df_BBANDS["Real Middle Band"] = pd.to_numeric(df_BBANDS["Real Middle Band"], errors="coerce")
+    df_BBANDS["Real Lower Band"] = pd.to_numeric(df_BBANDS["Real Lower Band"], errors="coerce")
 
-df_BBANDS['date'] = pd.to_datetime(df_BBANDS['date'])
-df_BBANDS["Real Upper Band"] = pd.to_numeric(df_BBANDS["Real Upper Band"], errors="coerce")
-df_BBANDS["Real Middle Band"] = pd.to_numeric(df_BBANDS["Real Middle Band"], errors="coerce")
-df_BBANDS["Real Lower Band"] = pd.to_numeric(df_BBANDS["Real Lower Band"], errors="coerce")
 
+    df_BBANDS.set_index('date', inplace=True)
 
-df_BBANDS.set_index('date', inplace=True)
+    df_BBANDS.sort_index(inplace=True)
 
-df_BBANDS.sort_index(inplace=True)
 
+    df_BBANDS['Real Upper Band'] = df_BBANDS['Real Upper Band'].interpolate(method='time')
+    df_BBANDS['Real Middle Band'] = df_BBANDS['Real Middle Band'].interpolate(method='time')
+    df_BBANDS['Real Lower Band'] = df_BBANDS['Real Lower Band'].interpolate(method='time')
 
-df_BBANDS['Real Upper Band'] = df_BBANDS['Real Upper Band'].interpolate(method='time')
-df_BBANDS['Real Middle Band'] = df_BBANDS['Real Middle Band'].interpolate(method='time')
-df_BBANDS['Real Lower Band'] = df_BBANDS['Real Lower Band'].interpolate(method='time')
+    df_BBANDS['Real Upper Band'] = df_BBANDS['Real Upper Band'].fillna(method='bfill').fillna(method='ffill')
+    df_BBANDS['Real Middle Band'] = df_BBANDS['Real Middle Band'].fillna(method='bfill').fillna(method='ffill')
+    df_BBANDS['Real Lower Band'] = df_BBANDS['Real Lower Band'].fillna(method='bfill').fillna(method='ffill')
 
-df_BBANDS['Real Upper Band'] = df_BBANDS['Real Upper Band'].fillna(method='bfill').fillna(method='ffill')
-df_BBANDS['Real Middle Band'] = df_BBANDS['Real Middle Band'].fillna(method='bfill').fillna(method='ffill')
-df_BBANDS['Real Lower Band'] = df_BBANDS['Real Lower Band'].fillna(method='bfill').fillna(method='ffill')
+    data6 = retrieveSTOCH(symbol,Api_key,outputsize,interval)
 
-data6 = retrieveSTOCH(symbol,Api_key,outputsize,interval)
+    records = []
 
-records = []
+    STOCH_data = data6["Technical Analysis: STOCH"]
 
-STOCH_data = data6["Technical Analysis: STOCH"]
+    for date, values in STOCH_data.items():
+        records.append({
+            'date': date,
+            'SlowK': values["SlowK"],
+            'SlowD': values["SlowD"]
+        })
 
-for date, values in STOCH_data.items():
-    records.append({
-        'date': date,
-        'SlowK': values["SlowK"],
-        'SlowD': values["SlowD"]
-    })
+    df_STOCH = pd.DataFrame(records)
 
-df_STOCH = pd.DataFrame(records)
+    df_STOCH["SlowK"] = pd.to_numeric(df_STOCH["SlowK"], errors="coerce")
+    df_STOCH["SlowD"] = pd.to_numeric(df_STOCH["SlowD"], errors="coerce")
 
-df_STOCH["SlowK"] = pd.to_numeric(df_STOCH["SlowK"], errors="coerce")
-df_STOCH["SlowD"] = pd.to_numeric(df_STOCH["SlowD"], errors="coerce")
+    df_STOCH['date'] = pd.to_datetime(df_STOCH['date'])
 
-df_STOCH['date'] = pd.to_datetime(df_STOCH['date'])
+    df_STOCH.set_index('date', inplace=True)
 
-df_STOCH.set_index('date', inplace=True)
+    df_STOCH.sort_index(inplace=True)
 
-df_STOCH.sort_index(inplace=True)
+    df_STOCH['SlowD'] = df_STOCH['SlowD'].interpolate(method='time')
+    df_STOCH['SlowK'] = df_STOCH['SlowK'].interpolate(method='time')
 
-df_STOCH['SlowD'] = df_STOCH['SlowD'].interpolate(method='time')
-df_STOCH['SlowK'] = df_STOCH['SlowK'].interpolate(method='time')
 
+    # if their is still NAN at the extremities we fill them
+    df_STOCH['SlowD'] = df_STOCH['SlowD'].fillna(method='bfill').fillna(method='ffill')
+    df_STOCH['SlowK'] = df_STOCH['SlowK'].fillna(method='bfill').fillna(method='ffill')
 
-# if their is still NAN at the extremities we fill them
-df_STOCH['SlowD'] = df_STOCH['SlowD'].fillna(method='bfill').fillna(method='ffill')
-df_STOCH['SlowK'] = df_STOCH['SlowK'].fillna(method='bfill').fillna(method='ffill')
+    dataadx = retrieveADX(symbol,Api_key,interval,time_period)
 
-dataadx = retrieveADX(symbol,Api_key,interval,time_period)
+    records = []
+    ADX_data = dataadx['Technical Analysis: ADX']
+    for date, values in ADX_data.items():
+        records.append({
+            'date': date,
+            'ADX': values['ADX']
+        })
+    df_ADX = pd.DataFrame(records)
+    df_ADX['date'] = pd.to_datetime(df_ADX['date'])
+    df_ADX["ADX"] = pd.to_numeric(df_ADX["ADX"], errors="coerce")
 
-records = []
-ADX_data = dataadx['Technical Analysis: ADX']
-for date, values in ADX_data.items():
-    records.append({
-        'date': date,
-        'ADX': values['ADX']
-    })
-df_ADX = pd.DataFrame(records)
-df_ADX['date'] = pd.to_datetime(df_ADX['date'])
-df_ADX["ADX"] = pd.to_numeric(df_ADX["ADX"], errors="coerce")
+    df_ADX.set_index('date', inplace=True)
 
-df_ADX.set_index('date', inplace=True)
 
+    df_ADX.sort_index(inplace=True)
 
-df_ADX.sort_index(inplace=True)
+    df_ADX['ADX'] = df_ADX['ADX'].interpolate(method='time')
 
-df_ADX['ADX'] = df_ADX['ADX'].interpolate(method='time')
+    df_ADX['ADX'] = df_ADX['ADX'].fillna(method='bfill').fillna(method='ffill')
 
-df_ADX['ADX'] = df_ADX['ADX'].fillna(method='bfill').fillna(method='ffill')
+    df_ADX.tail()
 
-df_ADX.tail()
+    data7= retrieveOBV(symbol, Api_key, interval, time_period)
 
-data7= retrieveOBV(symbol, Api_key, interval, time_period)
+    records = []
+    OBV_data = data7['Technical Analysis: OBV']
+    for date, values in OBV_data.items():
+        records.append({
+            'date': date,
+            'OBV': values['OBV']
+        })
+    df_OBV = pd.DataFrame(records)
+    df_OBV['date'] = pd.to_datetime(df_OBV['date'])
+    df_OBV["OBV"] = pd.to_numeric(df_OBV["OBV"], errors="coerce")
 
-records = []
-OBV_data = data7['Technical Analysis: OBV']
-for date, values in OBV_data.items():
-    records.append({
-        'date': date,
-        'OBV': values['OBV']
-    })
-df_OBV = pd.DataFrame(records)
-df_OBV['date'] = pd.to_datetime(df_OBV['date'])
-df_OBV["OBV"] = pd.to_numeric(df_OBV["OBV"], errors="coerce")
+    df_OBV.set_index('date', inplace=True)
 
-df_OBV.set_index('date', inplace=True)
 
+    df_OBV.sort_index(inplace=True)
 
-df_OBV.sort_index(inplace=True)
+    df_OBV['OBV'] = df_OBV['OBV'].interpolate(method='time')
 
-df_OBV['OBV'] = df_OBV['OBV'].interpolate(method='time')
 
+    df_OBV['OBV'] = df_OBV['OBV'].fillna(method='bfill').fillna(method='ffill')
+    df_OBV.tail()
 
-df_OBV['OBV'] = df_OBV['OBV'].fillna(method='bfill').fillna(method='ffill')
-df_OBV.tail()
+    data8 = retrieveCCI(symbol, Api_key,interval,time_period)
 
-data8 = retrieveCCI(symbol, Api_key,interval,time_period)
+    records = []
+    CCI_data = data8['Technical Analysis: CCI']
+    for date, values in CCI_data.items():
+        records.append({
+            'date': date,
+            'CCI': values['CCI']
+        })
+    df_CCI = pd.DataFrame(records)
+    df_CCI['date'] = pd.to_datetime(df_CCI['date'])
+    df_CCI["CCI"] = pd.to_numeric(df_CCI["CCI"], errors="coerce")
 
-records = []
-CCI_data = data8['Technical Analysis: CCI']
-for date, values in CCI_data.items():
-    records.append({
-        'date': date,
-        'CCI': values['CCI']
-    })
-df_CCI = pd.DataFrame(records)
-df_CCI['date'] = pd.to_datetime(df_CCI['date'])
-df_CCI["CCI"] = pd.to_numeric(df_CCI["CCI"], errors="coerce")
 
+    df_CCI.set_index('date', inplace=True)
 
-df_CCI.set_index('date', inplace=True)
 
+    df_CCI.sort_index(inplace=True)
 
-df_CCI.sort_index(inplace=True)
+    # interpolate missing values
+    df_CCI['CCI'] = df_CCI['CCI'].interpolate(method='time')
 
-# interpolate missing values
-df_CCI['CCI'] = df_CCI['CCI'].interpolate(method='time')
 
+    df_CCI['CCI'] = df_CCI['CCI'].fillna(method='bfill').fillna(method='ffill')
 
-df_CCI['CCI'] = df_CCI['CCI'].fillna(method='bfill').fillna(method='ffill')
+    data9 =retrieveMACDEXT(symbol, Api_key, interval,series_type)
 
-data9 =retrieveMACDEXT(symbol, Api_key, interval,series_type)
+    records = []
 
-records = []
+    MACDEXT_data = data9["Technical Analysis: MACDEXT"]
 
-MACDEXT_data = data9["Technical Analysis: MACDEXT"]
+    for date, values in MACDEXT_data.items():
+        records.append({
+            'date': date,
+            'MACD': values["MACD"],
+            'MACD_Signal': values["MACD_Signal"],
+            "MACD_Hist":  values["MACD_Hist"]
+        })
 
-for date, values in MACDEXT_data.items():
-    records.append({
-        'date': date,
-        'MACD': values["MACD"],
-        'MACD_Signal': values["MACD_Signal"],
-        "MACD_Hist":  values["MACD_Hist"]
-    })
+    df_MACDEXT = pd.DataFrame(records)
 
-df_MACDEXT = pd.DataFrame(records)
+    df_MACDEXT["MACD_Hist"] = pd.to_numeric(df_MACDEXT["MACD_Hist"], errors="coerce")
+    df_MACDEXT["MACD"] = pd.to_numeric(df_MACDEXT["MACD"], errors="coerce")
+    df_MACDEXT["MACD_Signal"] = pd.to_numeric(df_MACDEXT["MACD_Signal"], errors="coerce")
 
-df_MACDEXT["MACD_Hist"] = pd.to_numeric(df_MACDEXT["MACD_Hist"], errors="coerce")
-df_MACDEXT["MACD"] = pd.to_numeric(df_MACDEXT["MACD"], errors="coerce")
-df_MACDEXT["MACD_Signal"] = pd.to_numeric(df_MACDEXT["MACD_Signal"], errors="coerce")
+    df_MACDEXT['date'] = pd.to_datetime(df_MACDEXT['date'])
 
-df_MACDEXT['date'] = pd.to_datetime(df_MACDEXT['date'])
+    df_MACDEXT.set_index('date', inplace=True)
 
-df_MACDEXT.set_index('date', inplace=True)
+    df_MACDEXT.sort_index(inplace=True)
 
-df_MACDEXT.sort_index(inplace=True)
 
+    # Interpoler missing values
+    df_MACDEXT['MACD_Signal'] = df_MACDEXT['MACD_Signal'].interpolate(method='time')
+    df_MACDEXT['MACD'] = df_MACDEXT['MACD'].interpolate(method='time')
+    df_MACDEXT['MACD_Hist'] = df_MACDEXT['MACD_Hist'].interpolate(method='time')
 
-# Interpoler missing values
-df_MACDEXT['MACD_Signal'] = df_MACDEXT['MACD_Signal'].interpolate(method='time')
-df_MACDEXT['MACD'] = df_MACDEXT['MACD'].interpolate(method='time')
-df_MACDEXT['MACD_Hist'] = df_MACDEXT['MACD_Hist'].interpolate(method='time')
+    df_MACDEXT['MACD_Signal'] = df_MACDEXT['MACD_Signal'].fillna(method='bfill').fillna(method='ffill')
+    df_MACDEXT['MACD'] = df_MACDEXT['MACD'].fillna(method='bfill').fillna(method='ffill')
+    df_MACDEXT['MACD_Hist'] = df_MACDEXT['MACD_Hist'].fillna(method='bfill').fillna(method='ffill')
 
-df_MACDEXT['MACD_Signal'] = df_MACDEXT['MACD_Signal'].fillna(method='bfill').fillna(method='ffill')
-df_MACDEXT['MACD'] = df_MACDEXT['MACD'].fillna(method='bfill').fillna(method='ffill')
-df_MACDEXT['MACD_Hist'] = df_MACDEXT['MACD_Hist'].fillna(method='bfill').fillna(method='ffill')
+    # dataeps = retrieveEarningsEstimates(symbol, Api_key)
+    # earning per share would be useless at low term
+    #continuer ici
 
-# dataeps = retrieveEarningsEstimates(symbol, Api_key)
-# earning per share would be useless at low term
-#continuer ici
+    data10 = retrieveAPO(symbol, Api_key,interval,series_type,)
 
-data10 = retrieveAPO(symbol, Api_key,interval,series_type,)
 
 
+    records = []
+    APO_data = data10['Technical Analysis: APO']
+    for date, values in APO_data.items():
+        records.append({
+            'date': date,
+            'APO': values['APO']
+        })
+    df_APO = pd.DataFrame(records)
+    df_APO['date'] = pd.to_datetime(df_APO['date'])
 
-records = []
-APO_data = data10['Technical Analysis: APO']
-for date, values in APO_data.items():
-    records.append({
-        'date': date,
-        'APO': values['APO']
-    })
-df_APO = pd.DataFrame(records)
-df_APO['date'] = pd.to_datetime(df_APO['date'])
+    df_APO.set_index('date', inplace=True)
 
-df_APO.set_index('date', inplace=True)
 
+    df_APO.sort_index(inplace=True)
 
-df_APO.sort_index(inplace=True)
 
 
+    df_APO['APO'] = df_APO['APO'].interpolate(method='time')
 
-df_APO['APO'] = df_APO['APO'].interpolate(method='time')
 
+    df_APO['APO'] = df_APO['APO'].fillna(method='bfill').fillna(method='ffill')
 
-df_APO['APO'] = df_APO['APO'].fillna(method='bfill').fillna(method='ffill')
-
-df_APO.tail()
-
+    df_APO.tail()
+except:
+    print("API key error")
+else :
+    print("datafetch sucessful")
 """fetching and preporcessing macroeconomics data for etf like s&p500
 
 """
@@ -615,11 +618,21 @@ def  join_DataStock( df_ADX :pd.DataFrame, df_APO :pd.DataFrame, df_BBANDS :pd.D
 
     return df_combined
 
-df_complete= join_DataStock(df_ADX, df_APO, df_BBANDS, df_CCI, df_MACDEXT, df_OBV, df_OCLHV, df_RSI, df_STOCH, df_Shares, df_WMA)
+try:
+    df_complete= join_DataStock(df_ADX, df_APO, df_BBANDS, df_CCI, df_MACDEXT, df_OBV, df_OCLHV, df_RSI, df_STOCH, df_Shares, df_WMA)
+except:
+    print("error merging data")
+else:
+    print("merging sucessful")
+
+
 
 csv_folder = current_dir.parent.parent / "csv" / "Nvidia"
 csv_folder.mkdir(parents=True, exist_ok=True)
 csv_path = csv_folder / "completerawdata.csv"
-
-df_complete.to_csv(csv_path,  index=True, index_label="date")
-"""file saved on google drive"""
+try:
+    df_complete.to_csv(csv_path,  index=True, index_label="date")
+except :
+    print('failed saving')
+else : 
+    print('file saved')
