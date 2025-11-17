@@ -16,8 +16,10 @@ current_dir = Path(__file__).parent
 """Getting the data saved from the fetch"""
 
 fetch_csv_path = current_dir.parent.parent/ "csv" / "Tesla" / "completerawdata.csv"
-
-df_raw = pd.read_csv(fetch_csv_path)
+try :
+    df_raw = pd.read_csv(fetch_csv_path)
+except :
+     print('file not found')
 
 df_raw['date']= pd.to_datetime( df_raw['date'])
 
