@@ -291,7 +291,7 @@ QPushButton:pressed {
             color: #333333;</string>
          </property>
          <property name="text">
-          <string>📊 Prediction Result</string>
+          <string> Prediction Result</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -423,7 +423,7 @@ font-weight: bold;
 color: #f57c00;</string>
               </property>
               <property name="text">
-               <string>➡️ STABLE</string>
+               <string> STABLE</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -564,6 +564,40 @@ color: #333333;</string>
         </widget>
        </item>
        <item>
+        <widget class="QComboBox" name="comboBox">
+         <item>
+          <property name="text">
+           <string>change time-period</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1 week</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1 month</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>6 month</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>1 Year</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>5 Year</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item>
         <widget class="QWidget" name="chartWidget" native="true">
          <property name="minimumSize">
           <size>
@@ -588,7 +622,7 @@ border-radius: 5px;</string>
      <x>0</x>
      <y>0</y>
      <width>1200</width>
-     <height>18</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
