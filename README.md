@@ -129,7 +129,6 @@ TensorTrend/
    ./src.exe
    ```
 
-For detailed setup instructions, see [GUI Setup Guide](./Documentation/GUI_SETUP_GUIDE.md)
 
 ---
 
@@ -303,7 +302,6 @@ Edit `ML_model/xgboostv3.py`:
 - Check XGBoost include/lib paths
 - Ensure all dependencies are installed
 
-See full troubleshooting guide in [Documentation](./Documentation/TROUBLESHOOTING.md)
 
 ---
 
@@ -387,3 +385,4 @@ If you find this project useful, please consider giving it a star! ⭐
 
 
 *Disclaimer: This software is for educational purposes only. Do not use for actual trading without proper risk assessment. Past performance does not guarantee future results.*
+
