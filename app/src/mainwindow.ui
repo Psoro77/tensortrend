@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1200</width>
-    <height>829</height>
+    <height>903</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -95,7 +95,7 @@ font-weight: bold;
 color: #333333;</string>
          </property>
          <property name="text">
-          <string>Select a stock to generate a prediction and visualize</string>
+          <string>Select a stock to generate a prediction</string>
          </property>
         </widget>
        </item>
@@ -126,7 +126,6 @@ QComboBox::drop-down {
 }
 
 QComboBox::down-arrow {
-    image: url(:/icons/down-arrow.png);
     width: 12px;
     height: 12px;
 }</string>
@@ -138,27 +137,27 @@ QComboBox::down-arrow {
          </item>
          <item>
           <property name="text">
-           <string>Coca-Cola</string>
+           <string>🥤 Coca-Cola</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Tesla</string>
+           <string>🚗 Tesla</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Google</string>
+           <string>🔍 Google</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>NVIDIA</string>
+           <string>🎮 NVIDIA</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Johnson and Johnson</string>
+           <string>💊 Johnson and Johnson</string>
           </property>
          </item>
         </widget>
@@ -208,7 +207,7 @@ QPushButton:disabled {
 }</string>
          </property>
          <property name="text">
-          <string>🔮 Predict</string>
+          <string>Predict</string>
          </property>
         </widget>
        </item>
@@ -239,7 +238,7 @@ QPushButton:pressed {
 }</string>
          </property>
          <property name="text">
-          <string>🗑️ Clear</string>
+          <string> Clear</string>
          </property>
         </widget>
        </item>
@@ -287,11 +286,11 @@ QPushButton:pressed {
         <widget class="QLabel" name="lblPredictionTitle">
          <property name="styleSheet">
           <string notr="true">font-size: 14pt; 
-            font-weight: bold; 
-            color: #333333;</string>
+font-weight: bold; 
+color: #333333;</string>
          </property>
          <property name="text">
-          <string> Prediction Result</string>
+          <string>🎯 Prediction Result</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -315,6 +314,9 @@ border-radius: 5px;</string>
          </property>
          <property name="text">
           <string>No prediction available. Select a stock and click Predict.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignmentFlag::AlignCenter</set>
          </property>
          <property name="wordWrap">
           <bool>true</bool>
@@ -423,7 +425,7 @@ font-weight: bold;
 color: #f57c00;</string>
               </property>
               <property name="text">
-               <string> STABLE</string>
+               <string>➡️ STABLE</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -556,7 +558,7 @@ font-weight: bold;
 color: #333333;</string>
          </property>
          <property name="text">
-          <string> Stock Price History</string>
+          <string>📈 Stock Price History</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -564,50 +566,137 @@ color: #333333;</string>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox">
+        <layout class="QHBoxLayout" name="horizontalLayout_chart_controls">
+         <property name="spacing">
+          <number>15</number>
+         </property>
          <item>
-          <property name="text">
-           <string>change time-period</string>
-          </property>
+          <widget class="QLabel" name="lblTimePeriod">
+           <property name="styleSheet">
+            <string notr="true">font-size: 11pt;
+font-weight: bold;
+color: #555555;</string>
+           </property>
+           <property name="text">
+            <string> Time Period:</string>
+           </property>
+          </widget>
          </item>
          <item>
-          <property name="text">
-           <string>1 week</string>
-          </property>
+          <widget class="QComboBox" name="comboBox">
+           <property name="minimumSize">
+            <size>
+             <width>180</width>
+             <height>35</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Select the time period to display on the chart</string>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QComboBox {
+    border: 2px solid #9E9E9E;
+    border-radius: 5px;
+    padding: 5px 10px;
+    background-color: white;
+    font-size: 10pt;
+}
+
+QComboBox:hover {
+    border: 2px solid #2196F3;
+}
+
+QComboBox:focus {
+    border: 2px solid #1976D2;
+}
+
+QComboBox::drop-down {
+    border: none;
+    width: 30px;
+}
+
+QComboBox::down-arrow {
+    width: 10px;
+    height: 10px;
+}
+
+QComboBox QAbstractItemView {
+    border: 2px solid #2196F3;
+    selection-background-color: #E3F2FD;
+    selection-color: #1976D2;
+}</string>
+           </property>
+           <item>
+            <property name="text">
+             <string>All Available Data</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Last Week (7 days)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Last Month (30 days)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Last 6 Months (180 days)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Last Year (365 days)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Last 5 Years</string>
+            </property>
+           </item>
+          </widget>
          </item>
          <item>
-          <property name="text">
-           <string>1 month</string>
-          </property>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
          </item>
          <item>
-          <property name="text">
-           <string>6 month</string>
-          </property>
+          <widget class="QLabel" name="lblDataPoints">
+           <property name="styleSheet">
+            <string notr="true">font-size: 10pt;
+color: #757575;
+padding: 5px;</string>
+           </property>
+           <property name="text">
+            <string>ℹ️ Select a stock to view chart</string>
+           </property>
+          </widget>
          </item>
-         <item>
-          <property name="text">
-           <string>1 Year</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>5 Year</string>
-          </property>
-         </item>
-        </widget>
+        </layout>
        </item>
        <item>
         <widget class="QWidget" name="chartWidget" native="true">
          <property name="minimumSize">
           <size>
            <width>0</width>
-           <height>300</height>
+           <height>350</height>
           </size>
          </property>
          <property name="styleSheet">
           <string notr="true">background-color: #fafafa; 
-border-radius: 5px;</string>
+border-radius: 5px;
+border: 1px solid #e0e0e0;</string>
          </property>
         </widget>
        </item>
@@ -638,29 +727,68 @@ border-radius: 5px;</string>
      <string>Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="separator"/>
+    <addaction name="actionDocumentation"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionRefresh"/>
    </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuView"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="styleSheet">
-    <string notr="true">background-color: #f5f5f5; 
-color: #666666;</string>
+    <string notr="true">QStatusBar {
+    background-color: #f5f5f5; 
+    color: #666666;
+    font-size: 10pt;
+    padding: 5px;
+}
+
+QStatusBar::item {
+    border: none;
+}</string>
    </property>
   </widget>
   <action name="actionExport">
    <property name="text">
     <string>Export Results...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
   </action>
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
   </action>
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
+   </property>
+   <property name="shortcut">
+    <string>F1</string>
+   </property>
+  </action>
+  <action name="actionDocumentation">
+   <property name="text">
+    <string>Documentation</string>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
    </property>
   </action>
  </widget>

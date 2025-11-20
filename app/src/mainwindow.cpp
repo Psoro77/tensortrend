@@ -1,4 +1,3 @@
-// MainWindow.cpp
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include <QFile>
@@ -27,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
                               QString("Failed to load ML model from:\n%1").arg(modelPath));
     } else {
         qDebug() << "Model loaded successfully!";
-        ui->statusbar->showMessage("Model loaded successfully");
+        ui->statusbar->showMessage("Model loaded successfully - Ready for predictions");
     }
 }
 
@@ -40,6 +39,7 @@ void MainWindow::setupChart() {
     chart = new QChart();
     chart->setTitle("Stock Price History");
     chart->setAnimationOptions(QChart::SeriesAnimations);
+    chart->setTheme(QChart::ChartThemeLight);
 
     chartView = new QChartView(chart);
     chartView->setRenderHint(QPainter::Antialiasing);
@@ -55,6 +55,8 @@ void MainWindow::setupConnections() {
             this, &MainWindow::onPredictClicked);
     connect(ui->btnClear, &QPushButton::clicked,
             this, &MainWindow::onClearClicked);
+    connect(ui->comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &MainWindow::onTimePeriodChanged);
 }
 
 void MainWindow::onPredictClicked() {
@@ -75,18 +77,23 @@ void MainWindow::onPredictClicked() {
     }
 
     qDebug() << "Processing stock:" << stockFolder;
+    ui->statusbar->showMessage(QString("Loading data for %1...").arg(stockFolder));
 
     // 2. Afficher le graphique des prix
     QString pricesCsvPath = QString("../../../../data/csv/%1/%1_prices.csv").arg(stockFolder);
-    QVector<PriceData> priceData = readPriceCSV(pricesCsvPath);
+    currentPriceData = readPriceCSV(pricesCsvPath);
 
-    if (priceData.isEmpty()) {
+    if (currentPriceData.isEmpty()) {
         QMessageBox::warning(this, "Error",
                              QString("Failed to load price data from:\n%1").arg(pricesCsvPath));
         return;
     }
 
-    displayChart(priceData);
+    // Réinitialiser le sélecteur de période
+    ui->comboBox->setCurrentIndex(0);
+
+    // Afficher le graphique (par défaut: tous les jours)
+    displayChart(currentPriceData);
     qDebug() << "Chart displayed successfully";
 
     // 3. Faire la prédiction
@@ -115,7 +122,7 @@ void MainWindow::onPredictClicked() {
     // 5. Afficher les résultats
     displayPrediction(result);
 
-    ui->statusbar->showMessage(QString("Prediction completed for %1").arg(stockFolder));
+    ui->statusbar->showMessage(QString("✓ Prediction completed for %1").arg(selectedStock), 5000);
 }
 
 QString MainWindow::getStockFolder() {
@@ -187,7 +194,23 @@ QVector<MainWindow::PriceData> MainWindow::readPriceCSV(const QString &csvPath) 
     return data;
 }
 
-void MainWindow::displayChart(const QVector<PriceData> &data) {
+int MainWindow::getDaysFromTimePeriod(int index) {
+    switch(index) {
+    case 1: return 7;      // 1 semaine
+    case 2: return 30;     // 1 mois
+    case 3: return 180;    // 6 mois
+    case 4: return 365;    // 1 an
+    case 5: return 1825;   // 5 ans
+    default: return -1;    // Tout afficher
+    }
+}
+
+void MainWindow::displayChart(const QVector<PriceData> &data, int daysToShow) {
+    if (data.isEmpty()) {
+        qWarning() << "No data to display";
+        return;
+    }
+
     // 1. Nettoyer le chart existant
     chart->removeAllSeries();
 
@@ -200,37 +223,58 @@ void MainWindow::displayChart(const QVector<PriceData> &data) {
     QLineSeries *series = new QLineSeries();
     series->setName("Close Price");
 
-    // 3. Remplir la série avec les données
-    // (Limiter aux 120 derniers jours pour la lisibilité)
-    int startIndex = qMax(0, data.size() - 120);
+    // 3. Calculer l'index de départ
+    int startIndex;
+    if (daysToShow == -1) {
+        // Afficher tous les jours (limité à 365 pour la performance)
+        startIndex = qMax(0, data.size() - 365);
+    } else {
+        startIndex = qMax(0, data.size() - daysToShow);
+    }
+
+    // 4. Remplir la série avec les données
+    double minPrice = std::numeric_limits<double>::max();
+    double maxPrice = std::numeric_limits<double>::min();
 
     for (int i = startIndex; i < data.size(); ++i) {
         series->append(data[i].date.toMSecsSinceEpoch(), data[i].close);
+        minPrice = qMin(minPrice, data[i].close);
+        maxPrice = qMax(maxPrice, data[i].close);
     }
 
-    // 4. Ajouter la série au chart
+    // 5. Ajouter la série au chart
     chart->addSeries(series);
 
-    // 5. Créer les axes
+    // 6. Créer les axes
     QDateTimeAxis *axisX = new QDateTimeAxis();
     axisX->setFormat("MMM dd");
     axisX->setTitleText("Date");
     axisX->setLabelsAngle(-45);
+    axisX->setTickCount(qMin(10, data.size() - startIndex));
     chart->addAxis(axisX, Qt::AlignBottom);
     series->attachAxis(axisX);
 
     QValueAxis *axisY = new QValueAxis();
     axisY->setTitleText("Price ($)");
     axisY->setLabelFormat("%.2f");
+
+    // Ajouter une marge de 5% aux prix min/max pour une meilleure visualisation
+    double margin = (maxPrice - minPrice) * 0.05;
+    axisY->setRange(minPrice - margin, maxPrice + margin);
+
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
 
-    // 6. Mettre à jour le titre
-    QString stockName = getStockFolder();
-    chart->setTitle(QString("%1 - Last %2 Days").arg(stockName).arg(data.size() - startIndex));
+    // 7. Mettre à jour le titre
+    QString stockName = ui->comboBoxStock->currentText();
+    int displayedDays = data.size() - startIndex;
+    QString periodText = (daysToShow == -1) ? "All Available Data" : QString("Last %1 Days").arg(displayedDays);
 
-    qDebug() << "Chart updated successfully!";
+    chart->setTitle(QString("%1 - %2").arg(stockName, periodText));
+
+    qDebug() << "Chart updated successfully! Showing" << displayedDays << "days of data";
 }
+
 void MainWindow::displayPrediction(const StockPredictor::PredictionResult &result) {
     // 1. Texte de prédiction
     QString predictionText;
@@ -264,13 +308,39 @@ void MainWindow::displayPrediction(const StockPredictor::PredictionResult &resul
 
     // Mettre en évidence la prédiction
     if (result.prediction == -1) {
-        ui->frameDown->setStyleSheet("QFrame { background-color: #ffcdd2; border-radius: 8px; border: 3px solid #d32f2f; }");
+        ui->frameDown->setStyleSheet("QFrame { background-color: #ffcdd2; border-radius: 8px; border: 3px solid #d32f2f; box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3); }");
     } else if (result.prediction == 0) {
-        ui->frameHold->setStyleSheet("QFrame { background-color: #ffe0b2; border-radius: 8px; border: 3px solid #f57c00; }");
+        ui->frameHold->setStyleSheet("QFrame { background-color: #ffe0b2; border-radius: 8px; border: 3px solid #f57c00; box-shadow: 0 4px 8px rgba(245, 124, 0, 0.3); }");
     } else {
-        ui->frameUp->setStyleSheet("QFrame { background-color: #c8e6c9; border-radius: 8px; border: 3px solid #388e3c; }");
+        ui->frameUp->setStyleSheet("QFrame { background-color: #c8e6c9; border-radius: 8px; border: 3px solid #388e3c; box-shadow: 0 4px 8px rgba(56, 142, 60, 0.3); }");
     }
 }
+
+void MainWindow::onTimePeriodChanged(int index) {
+    // Ne rien faire si aucune donnée n'est chargée
+    if (currentPriceData.isEmpty()) {
+        ui->statusbar->showMessage("Please select a stock and click Predict first", 3000);
+        return;
+    }
+
+    // Ne rien faire pour l'option par défaut "change time-period"
+    if (index == 0) {
+        return;
+    }
+
+    // Obtenir le nombre de jours à afficher
+    int daysToShow = getDaysFromTimePeriod(index);
+
+    // Afficher le graphique avec la période sélectionnée
+    displayChart(currentPriceData, daysToShow);
+
+    // Mettre à jour la barre de statut
+    QString periodName = ui->comboBox->currentText();
+    ui->statusbar->showMessage(QString("Chart updated to show %1").arg(periodName), 3000);
+
+    qDebug() << "Time period changed to:" << periodName << "(" << daysToShow << "days)";
+}
+
 void MainWindow::onClearClicked() {
     // Réinitialiser le texte de prédiction
     ui->lblPredictionText->setText("No prediction available. Select a stock and click Predict.");
@@ -292,8 +362,14 @@ void MainWindow::onClearClicked() {
     }
     chart->setTitle("Stock Price History");
 
-    // Réinitialiser la sélection
+    // Réinitialiser la sélection des combos
     ui->comboBoxStock->setCurrentIndex(0);
+    ui->comboBox->setCurrentIndex(0);
 
-    ui->statusbar->showMessage("Results cleared");
+    // Vider le cache de données
+    currentPriceData.clear();
+
+    ui->statusbar->showMessage("All results cleared - Ready for new prediction");
+
+    qDebug() << "All data cleared successfully";
 }
