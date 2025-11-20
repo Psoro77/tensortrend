@@ -1,3 +1,4 @@
+// MainWindow.cpp
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include <QFile>
@@ -196,12 +197,13 @@ QVector<MainWindow::PriceData> MainWindow::readPriceCSV(const QString &csvPath) 
 
 int MainWindow::getDaysFromTimePeriod(int index) {
     switch(index) {
+    case 0: return -1;     // Toutes les données disponibles
     case 1: return 7;      // 1 semaine
     case 2: return 30;     // 1 mois
     case 3: return 180;    // 6 mois
     case 4: return 365;    // 1 an
     case 5: return 1825;   // 5 ans
-    default: return -1;    // Tout afficher
+    default: return -1;    // Par défaut: tout afficher
     }
 }
 
@@ -227,7 +229,7 @@ void MainWindow::displayChart(const QVector<PriceData> &data, int daysToShow) {
     int startIndex;
     if (daysToShow == -1) {
         // Afficher tous les jours (limité à 365 pour la performance)
-        startIndex = qMax(0, data.size() - 365);
+        startIndex = 0;
     } else {
         startIndex = qMax(0, data.size() - daysToShow);
     }
@@ -247,10 +249,20 @@ void MainWindow::displayChart(const QVector<PriceData> &data, int daysToShow) {
 
     // 6. Créer les axes
     QDateTimeAxis *axisX = new QDateTimeAxis();
-    axisX->setFormat("MMM dd");
+
+    // Format de date adapté selon la période affichée
+    int displayedDays = data.size() - startIndex;
+    if (displayedDays <= 31) {
+        axisX->setFormat("MMM dd");  // Pour 1 mois ou moins
+    } else if (displayedDays <= 180) {
+        axisX->setFormat("MMM yyyy");  // Pour 6 mois ou moins
+    } else {
+        axisX->setFormat("MMM yyyy");  // Pour 1 an et plus
+    }
+
     axisX->setTitleText("Date");
     axisX->setLabelsAngle(-45);
-    axisX->setTickCount(qMin(10, data.size() - startIndex));
+    axisX->setTickCount(qMin(10, displayedDays));
     chart->addAxis(axisX, Qt::AlignBottom);
     series->attachAxis(axisX);
 
@@ -260,15 +272,22 @@ void MainWindow::displayChart(const QVector<PriceData> &data, int daysToShow) {
 
     // Ajouter une marge de 5% aux prix min/max pour une meilleure visualisation
     double margin = (maxPrice - minPrice) * 0.05;
-    axisY->setRange(minPrice - margin, maxPrice + margin);
+    double minY = qMax(0.0, minPrice - margin);
+    axisY->setRange(minY, maxPrice + margin);
 
     chart->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
 
     // 7. Mettre à jour le titre
     QString stockName = ui->comboBoxStock->currentText();
-    int displayedDays = data.size() - startIndex;
-    QString periodText = (daysToShow == -1) ? "All Available Data" : QString("Last %1 Days").arg(displayedDays);
+    displayedDays = data.size() - startIndex;
+
+    QString periodText;
+    if (daysToShow == -1) {
+        periodText = QString("All Available Data (%1 days)").arg(displayedDays);
+    } else {
+        periodText = QString("Last %1 Days").arg(displayedDays);
+    }
 
     chart->setTitle(QString("%1 - %2").arg(stockName, periodText));
 
@@ -323,12 +342,7 @@ void MainWindow::onTimePeriodChanged(int index) {
         return;
     }
 
-    // Ne rien faire pour l'option par défaut "change time-period"
-    if (index == 0) {
-        return;
-    }
-
-    // Obtenir le nombre de jours à afficher
+    // Obtenir le nombre de jours à afficher (y compris pour index 0)
     int daysToShow = getDaysFromTimePeriod(index);
 
     // Afficher le graphique avec la période sélectionnée
