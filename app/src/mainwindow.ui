@@ -283,21 +283,6 @@ QPushButton:pressed {
         <number>20</number>
        </property>
        <item>
-        <widget class="QLabel" name="lblPredictionTitle">
-         <property name="styleSheet">
-          <string notr="true">font-size: 14pt; 
-font-weight: bold; 
-color: #333333;</string>
-         </property>
-         <property name="text">
-          <string>🎯 Prediction Result</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignmentFlag::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QLabel" name="lblPredictionText">
          <property name="minimumSize">
           <size>
@@ -323,207 +308,207 @@ border-radius: 5px;</string>
          </property>
         </widget>
        </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_probabilities">
-         <property name="spacing">
-          <number>20</number>
-         </property>
-         <item>
-          <widget class="QFrame" name="frameDown">
-           <property name="styleSheet">
-            <string notr="true">QFrame {
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_probabilities">
+      <property name="spacing">
+       <number>20</number>
+      </property>
+      <item>
+       <widget class="QFrame" name="frameDown">
+        <property name="styleSheet">
+         <string notr="true">QFrame {
     background-color: #ffebee;
     border-radius: 8px;
     border: 2px solid #ef5350;
 }</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_down">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <property name="leftMargin">
+          <number>15</number>
+         </property>
+         <property name="topMargin">
+          <number>12</number>
+         </property>
+         <property name="rightMargin">
+          <number>15</number>
+         </property>
+         <property name="bottomMargin">
+          <number>12</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="lblDownTitle">
+           <property name="styleSheet">
+            <string notr="true">font-size: 11pt; 
+font-weight: bold; 
+color: #c62828;</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_down">
-            <property name="spacing">
-             <number>5</number>
-            </property>
-            <property name="leftMargin">
-             <number>15</number>
-            </property>
-            <property name="topMargin">
-             <number>12</number>
-            </property>
-            <property name="rightMargin">
-             <number>15</number>
-            </property>
-            <property name="bottomMargin">
-             <number>12</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="lblDownTitle">
-              <property name="styleSheet">
-               <string notr="true">font-size: 11pt; 
-font-weight: bold; 
-color: #c62828;</string>
-              </property>
-              <property name="text">
-               <string>📉 DOWN</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="lblDownValue">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">font-size: 18pt; 
-font-weight: bold; 
-color: #c62828;</string>
-              </property>
-              <property name="text">
-               <string>---%</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <property name="text">
+            <string>📉 DOWN</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="frameHold">
+          <widget class="QLabel" name="lblDownValue">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>30</height>
+            </size>
+           </property>
            <property name="styleSheet">
-            <string notr="true">QFrame {
+            <string notr="true">font-size: 18pt; 
+font-weight: bold; 
+color: #c62828;</string>
+           </property>
+           <property name="text">
+            <string>---%</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="frameHold">
+        <property name="styleSheet">
+         <string notr="true">QFrame {
     background-color: #fff3e0;
     border-radius: 8px;
     border: 2px solid #ff9800;
 }</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_hold">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <property name="leftMargin">
+          <number>15</number>
+         </property>
+         <property name="topMargin">
+          <number>12</number>
+         </property>
+         <property name="rightMargin">
+          <number>15</number>
+         </property>
+         <property name="bottomMargin">
+          <number>12</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="lblHoldTitle">
+           <property name="styleSheet">
+            <string notr="true">font-size: 11pt; 
+font-weight: bold; 
+color: #f57c00;</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_hold">
-            <property name="spacing">
-             <number>5</number>
-            </property>
-            <property name="leftMargin">
-             <number>15</number>
-            </property>
-            <property name="topMargin">
-             <number>12</number>
-            </property>
-            <property name="rightMargin">
-             <number>15</number>
-            </property>
-            <property name="bottomMargin">
-             <number>12</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="lblHoldTitle">
-              <property name="styleSheet">
-               <string notr="true">font-size: 11pt; 
-font-weight: bold; 
-color: #f57c00;</string>
-              </property>
-              <property name="text">
-               <string>➡️ STABLE</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="lblHoldValue">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">font-size: 18pt; 
-font-weight: bold; 
-color: #f57c00;</string>
-              </property>
-              <property name="text">
-               <string>---%</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           <property name="text">
+            <string>➡️ STABLE</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
           </widget>
          </item>
          <item>
-          <widget class="QFrame" name="frameUp">
+          <widget class="QLabel" name="lblHoldValue">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>30</height>
+            </size>
+           </property>
            <property name="styleSheet">
-            <string notr="true">QFrame {
+            <string notr="true">font-size: 18pt; 
+font-weight: bold; 
+color: #f57c00;</string>
+           </property>
+           <property name="text">
+            <string>---%</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QFrame" name="frameUp">
+        <property name="styleSheet">
+         <string notr="true">QFrame {
     background-color: #e8f5e9;
     border-radius: 8px;
     border: 2px solid #66bb6a;
 }</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_up">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <property name="leftMargin">
+          <number>15</number>
+         </property>
+         <property name="topMargin">
+          <number>12</number>
+         </property>
+         <property name="rightMargin">
+          <number>15</number>
+         </property>
+         <property name="bottomMargin">
+          <number>12</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="lblUpTitle">
+           <property name="styleSheet">
+            <string notr="true">font-size: 11pt; 
+font-weight: bold; 
+color: #2e7d32;</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_up">
-            <property name="spacing">
-             <number>5</number>
-            </property>
-            <property name="leftMargin">
-             <number>15</number>
-            </property>
-            <property name="topMargin">
-             <number>12</number>
-            </property>
-            <property name="rightMargin">
-             <number>15</number>
-            </property>
-            <property name="bottomMargin">
-             <number>12</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="lblUpTitle">
-              <property name="styleSheet">
-               <string notr="true">font-size: 11pt; 
+           <property name="text">
+            <string>📈 UP</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="lblUpValue">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>30</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">font-size: 18pt; 
 font-weight: bold; 
 color: #2e7d32;</string>
-              </property>
-              <property name="text">
-               <string>📈 UP</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="lblUpValue">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>30</height>
-               </size>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">font-size: 18pt; 
-font-weight: bold; 
-color: #2e7d32;</string>
-              </property>
-              <property name="text">
-               <string>---%</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignmentFlag::AlignCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
+           </property>
+           <property name="text">
+            <string>---%</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignmentFlag::AlignCenter</set>
+           </property>
           </widget>
          </item>
         </layout>
-       </item>
-      </layout>
-     </widget>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <widget class="QFrame" name="chartFrame">
@@ -556,6 +541,9 @@ color: #2e7d32;</string>
           <string notr="true">font-size: 14pt; 
 font-weight: bold; 
 color: #333333;</string>
+         </property>
+         <property name="lineWidth">
+          <number>0</number>
          </property>
          <property name="text">
           <string>📈 Stock Price History</string>
