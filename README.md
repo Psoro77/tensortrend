@@ -350,7 +350,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-**Project Maintainer**: Your Name
+**Project Maintainer**: Boubacar Ba
 
 - LinkedIn: [Your Profile](https://www.linkedin.com/in/b2o-7a9074372/)
 
@@ -395,6 +395,7 @@ If you find this project useful, please consider giving it a star! ⭐
 
 
 *Disclaimer: This software is for educational purposes only. Do not use for actual trading without proper risk assessment. Past performance does not guarantee future results.*
+
 
 
 
