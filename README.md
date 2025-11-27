@@ -14,7 +14,7 @@ A machine learning project that predicts next-day stock price movements using XG
 
 ## 🌟 Features
 
-- **Machine Learning Predictions**: XGBoost-based model for stock price movement prediction (UP/DOWN/HOLD) and LSTM model coming soon
+- **Machine Learning Predictions**: 2 models : XGBoost-based, hidden markov model and LSTM combinaition  model for stock price movement prediction (UP/DOWN/HOLD) and LSTM model 
 - **Multi-Stock Support**: Pre-configured for 5 major stocks (Coca-Cola, Tesla, Google, NVIDIA, Johnson and johnson)
 - **Interactive GUI**: Modern Qt-based desktop application with real-time charts
 - **Probability Distribution**: Detailed confidence levels for each prediction
@@ -234,15 +234,23 @@ The trained model will be saved to `data/models/final_xgb_3cat.json`
 
 ## 📈 Model Performance
 
+- **Xgboost**
+
 | Metric | Value |
 |--------|-------|
-| Accuracy | ~XX% |
-| Precision (UP) | ~XX% |
-| Precision (DOWN) | ~XX% |
-| Precision (HOLD) | ~XX% |
-| F1-Score | ~XX% |
+| Accuracy | 52% |
+| Precision (UP) | 50% |
+| Precision (DOWN) | 55% |
+| F1-Score | 53% |
 
-*Note: Update with actual metrics after training*
+- **Hmm +LSTM**
+| Metric | Value |
+|--------|-------|
+| Accuracy | 60% |
+| Precision (UP) | 61% |
+| Precision (DOWN) | 53% |
+| F1-Score | 56% |
+
 
 ---
 
@@ -385,4 +393,5 @@ If you find this project useful, please consider giving it a star! ⭐
 
 
 *Disclaimer: This software is for educational purposes only. Do not use for actual trading without proper risk assessment. Past performance does not guarantee future results.*
+
 
